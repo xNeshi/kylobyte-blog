@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/components/ThemeProvider";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
@@ -18,8 +19,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${roboto.variable} antialiased`}>{children}</body>
+    <html
+      lang="en"
+      suppressHydrationWarning
+    >
+      <body className={`${roboto.variable} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
