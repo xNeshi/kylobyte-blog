@@ -1,11 +1,13 @@
 import PostTag from "./PostTag";
 
 type PostCardProps = {
+  postId?: number;
   recent?: boolean;
   featured?: boolean;
 };
 
 export const PostCard = ({
+  postId,
   recent = false,
   featured = false,
 }: PostCardProps) => {
@@ -13,18 +15,50 @@ export const PostCard = ({
     <div
       className={`${
         recent
-          ? `${featured ? "post-card" : "post-card tablet:flex-row"}`
+          ? `${
+              featured
+                ? `${
+                    postId === 0
+                      ? "post-card laptop:row-span-2 tablet:mb-3"
+                      : postId === 3
+                      ? "post-card laptop:col-span-2 laptop:flex-row laptop:mt-5"
+                      : "post-card"
+                  }`
+                : "post-card tablet:flex-row"
+            }`
           : "post-card"
       }`}
     >
       <div
         className={`${
           featured
-            ? "w-full aspect-[9/6] flex-[45%] bg-red-200 tablet:aspect-[9/3]"
+            ? `${
+                postId === 0
+                  ? `w-full aspect-[9/6] laptop:h-full bg-red-200 tablet:aspect-[9/3]`
+                  : `${
+                      postId === 3
+                        ? "w-full aspect-[9/6] flex-[50%] bg-red-200 tablet:aspect-[9/3] laptop:aspect:[9/4]"
+                        : "w-full aspect-[9/6] flex-[45%] bg-red-200 tablet:aspect-[9/3]"
+                    }`
+              }`
             : "w-full aspect-[9/6] flex-[45%] bg-red-200"
         }`}
       ></div>
-      <div className="flex flex-[55%] flex-col items-start gap-5">
+      <div
+        className={`${
+          featured
+            ? `${
+                postId === 0
+                  ? "flex flex-col items-start gap-5"
+                  : `${
+                      postId === 3
+                        ? "flex flex-[50%] flex-col items-start gap-5"
+                        : "flex flex-[55%] flex-col items-start gap-5"
+                    }`
+              }`
+            : "flex flex-[55%] flex-col items-start gap-5"
+        }`}
+      >
         <div className="flex flex-col gap-2">
           <h3 className="text-[14px] text-[var(--date-foreground)] font-semibold">
             Sunday, 1 Jan 2023
