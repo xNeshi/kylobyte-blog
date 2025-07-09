@@ -1,12 +1,8 @@
+import NavBar from "@/components/NavBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { roboto } from "../../public/font";
 import "./globals.css";
-
-const roboto = Roboto({
-  subsets: ["latin"],
-  variable: "--font-roboto",
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -30,7 +26,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <NavBar />
+          <main>{children}</main>
         </ThemeProvider>
       </body>
     </html>
