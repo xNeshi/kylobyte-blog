@@ -1,6 +1,6 @@
 export const HeaderTitle = () => {
   return (
-    <div className="flex flex-col w-full items-center justify-center my-3 p-4 border-y-1">
+    <div className="flex flex-col w-full items-center justify-center my-5 p-5 border-y-1">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 11.579999923706055 265.42999267578125 37.349998474121094"
