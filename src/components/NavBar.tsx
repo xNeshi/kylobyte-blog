@@ -1,6 +1,6 @@
-import { Search } from "lucide-react";
 import { inter } from "../../public/font";
-import ThemeToggle from "./ThemeToggle";
+import NavBarMenu from "./NavBarMenu";
+import NavSideBarTrigger from "./NavSideBarTrigger";
 
 export const NavBar = () => {
   return (
@@ -8,15 +8,13 @@ export const NavBar = () => {
       <nav className="flex items-center justify-between max-w-[1280px] w-full">
         <a
           href="/"
-          className={`${inter.className} text-[18px] tablet:text-[20px] font-bold`}
+          className={`${inter.className} line-clamp-1 text-[18px] tablet:text-[20px] font-bold`}
         >
           Liam Kyle's
         </a>
 
-        <div className="flex items-center justify-center gap-3">
-          <Search />
-          <ThemeToggle />
-        </div>
+        <NavBarMenu />
+        <NavSideBarTrigger />
       </nav>
     </header>
   );

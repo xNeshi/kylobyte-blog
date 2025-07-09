@@ -22,8 +22,8 @@
     --muted-foreground: #667085;
     --date-foreground: #6941c6;
 
-    --hover-bg: #f2f2f5;
-    --active-bg: #e4e4eb;
+    --hover-bg: #e0e7ff;
+    --active-bg: #c7d2fe;
   }
 
   .dark {
@@ -32,8 +32,8 @@
     --muted-foreground: #c0c5d0;
     --date-foreground: #7152ba;
 
-    --hover-bg: #1c2135;
-    --active-bg: #2a2f44;
+    --hover-bg: #312e81;
+    --active-bg: #3730a3;
   }
 
   body {
