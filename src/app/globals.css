@@ -7,10 +7,11 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --breakpoint-sphone: 320px;
+  --breakpoint-mphone: 375px;
+  --breakpoint-lphone: 425px;
+  --breakpoint-tablet: 640px;
+  --breakpoint-laptop: 1024px;
 }
 
 @layer base {
