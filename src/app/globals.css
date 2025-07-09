@@ -11,6 +11,7 @@
   --breakpoint-mphone: 375px;
   --breakpoint-lphone: 425px;
   --breakpoint-tablet: 640px;
+  --breakpoint-ltablet: 768px;
   --breakpoint-laptop: 1024px;
 }
 
@@ -41,5 +42,11 @@
 
   * {
     @apply box-border;
+  }
+}
+
+@layer components {
+  .post-card {
+    @apply flex flex-col justify-center gap-5 hover:scale-[0.98] transition-transform duration-200 ease-in-out;
   }
 }
