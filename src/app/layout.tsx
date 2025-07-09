@@ -30,10 +30,12 @@ export default function RootLayout({
         >
           <SidebarProvider>
             <NavSideBar />
-            <main className="flex flex-col w-full items-center justify-center">
+            <div className="flex flex-col w-full items-center">
               <NavBar />
-              {children}
-            </main>
+              <main className="flex flex-col w-full items-center justify-center max-w-[1280px]">
+                {children}
+              </main>
+            </div>
           </SidebarProvider>
         </ThemeProvider>
       </body>
