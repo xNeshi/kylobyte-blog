@@ -22,7 +22,7 @@ export const ThemeToggle = () => {
   return (
     <Button
       onClick={toggleThemeHandler}
-      className="w-fit h-fit !p-0"
+      className="w-fit h-fit !p-2 !px-3 !py-1.5 !rounded-full"
     >
       <AnimatePresence
         mode="wait"

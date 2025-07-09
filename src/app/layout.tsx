@@ -1,5 +1,7 @@
 import NavBar from "@/components/NavBar";
+import NavSideBar from "@/components/NavSideBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
 import { roboto } from "../../public/font";
 import "./globals.css";
@@ -26,10 +28,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NavBar />
-          <main className="flex flex-col w-full items-center justify-center">
-            {children}
-          </main>
+          <SidebarProvider>
+            <NavSideBar />
+            <main className="flex flex-col w-full items-center justify-center">
+              <NavBar />
+              {children}
+            </main>
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
