@@ -9,7 +9,8 @@
     "lint": "next lint",
     "d:gen": "drizzle-kit generate",
     "d:push": "drizzle-kit push",
-    "d:migrate": "drizzle-kit migrate"
+    "d:migrate": "drizzle-kit migrate",
+    "d:seed": "ts-node scripts/seed.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
