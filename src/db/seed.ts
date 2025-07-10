@@ -204,7 +204,6 @@ I’ll also compare it with the Pages Router and talk about migration strategies
       content: "Next.js App Router is 🔥",
     },
   ]);
-  console.log(await db.select().from(posts));
   console.log("✅ Seed complete.");
 }
 

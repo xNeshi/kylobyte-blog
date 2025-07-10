@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { posts } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 
 export async function getAllPost() {
   return await db.select().from(posts);
@@ -31,4 +31,11 @@ export async function getFeaturedPosts(limit: number = 3) {
     .where(eq(posts.isFeatured, true))
     .orderBy(desc(posts.createdAt))
     .limit(limit);
+}
+
+export async function getPostsByLikeId(postId: string) {
+  return await db
+    .select()
+    .from(posts)
+    .where(sql`LEFT(${posts.id}::text, 8) = ${postId}`);
 }

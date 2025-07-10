@@ -4,8 +4,10 @@ import {
   getAllPost,
   getFeaturedPosts,
   getPostById,
+  getPostsByLikeId,
   getRecentPosts,
 } from "../queries/posts";
+import { extractIdFromSlugWithId, extractSlugFromSlugWithId } from "../utils";
 
 export async function fetchAllPosts() {
   try {
@@ -44,5 +46,20 @@ export async function fetchFeaturedPosts(limit: number = 3) {
   } catch (error) {
     console.error("Error fetching featured posts:", error);
     return [];
+  }
+}
+
+export async function fetchPostsBySlugWithId(slugWithId: string) {
+  try {
+    const slug = extractSlugFromSlugWithId(slugWithId);
+    const partialId = extractIdFromSlugWithId(slugWithId);
+
+    const posts = await getPostsByLikeId(partialId || "");
+    const res = posts.find((post) => post.slug === slug);
+
+    return res;
+  } catch (error) {
+    console.error("Error fetching post by slug with ID:", error);
+    return null;
   }
 }
