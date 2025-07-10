@@ -39,3 +39,22 @@ export function getBackgroundColor(hex: string, weight = 0.88) {
 
   return `rgb(${mixed(r)}, ${mixed(g)}, ${mixed(b)})`;
 }
+
+export function extractIdFromSlugWithId(slugWithId: string): string | null {
+  const parts = slugWithId.split("-");
+  const maybeId = parts.at(-1);
+  return maybeId?.length === 8 ? maybeId : null;
+}
+
+export function extractSlugFromSlugWithId(slugWithId: string): string {
+  return slugWithId.slice(0, -9);
+}
+
+export const slugify = (text: string) => {
+  return text
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "")
+    .replace(/--+/g, "-")
+    .replace(/^-+|-+$/g, "");
+};
