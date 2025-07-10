@@ -2,7 +2,7 @@ import { SelectPost } from "@/db/schema";
 import { fetchTagsByPostId } from "@/lib/actions/tag";
 import Image from "next/image";
 import Link from "next/link";
-import PostTag from "./PostTag";
+import PostTagList from "./PostTagList";
 
 type PostCardProps = {
   pos?: number;
@@ -18,6 +18,7 @@ export const PostCard = async ({
   featured = false,
 }: PostCardProps) => {
   const postTags = await fetchTagsByPostId(post.id);
+  const tagNames = postTags.map((tag) => tag.tag.name);
 
   return (
     <Link
@@ -100,14 +101,7 @@ export const PostCard = async ({
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          {postTags.map((tag) => (
-            <PostTag
-              key={tag.tag.id}
-              label={tag.tag.name}
-            />
-          ))}
-        </div>
+        <PostTagList tags={tagNames} />
       </div>
     </Link>
   );
