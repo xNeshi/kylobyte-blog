@@ -1,16 +1,23 @@
+import { SelectPost } from "@/db/schema";
+import { fetchTagsByPostId } from "@/lib/actions/tag";
+import Image from "next/image";
 import PostTag from "./PostTag";
 
 type PostCardProps = {
-  postId?: number;
+  pos?: number;
+  post: SelectPost;
   recent?: boolean;
   featured?: boolean;
 };
 
-export const PostCard = ({
-  postId,
+export const PostCard = async ({
+  pos,
+  post,
   recent = false,
   featured = false,
 }: PostCardProps) => {
+  const postTags = await fetchTagsByPostId(post.id);
+
   return (
     <div
       className={`${
@@ -18,40 +25,48 @@ export const PostCard = ({
           ? `${
               featured
                 ? `${
-                    postId === 0
+                    pos === 0
                       ? "post-card laptop:row-span-2 tablet:mb-3"
-                      : postId === 3
+                      : pos === 3
                       ? "post-card laptop:col-span-2 laptop:flex-row laptop:mt-5"
                       : "post-card"
                   }`
-                : "post-card tablet:flex-row"
+                : "post-card h-fit tablet:flex-row"
             }`
           : "post-card"
       }`}
     >
       <div
-        className={`${
+        className={`relative overflow-hidden${
           featured
             ? `${
-                postId === 0
-                  ? `w-full aspect-[9/6] laptop:h-full bg-red-200 tablet:aspect-[9/3]`
+                pos === 0
+                  ? `w-full aspect-[9/6] laptop:h-full tablet:aspect-[9/3]`
                   : `${
-                      postId === 3
-                        ? "w-full aspect-[9/6] flex-[50%] bg-red-200 tablet:aspect-[9/3] laptop:aspect:[9/4]"
-                        : "w-full aspect-[9/6] flex-[45%] bg-red-200 tablet:aspect-[9/3]"
+                      pos === 3
+                        ? "w-full aspect-[9/6] flex-[50%] tablet:aspect-[9/3] laptop:aspect:[9/4]"
+                        : "w-full aspect-[9/6] flex-[45%] tablet:aspect-[9/3]"
                     }`
               }`
-            : "w-full aspect-[9/6] flex-[45%] bg-red-200"
+            : "w-full aspect-[9/6] flex-[45%]"
         }`}
-      ></div>
+      >
+        <Image
+          src={post.imageUrl}
+          alt={post.title}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+      </div>
       <div
         className={`${
           featured
             ? `${
-                postId === 0
+                pos === 0
                   ? "flex flex-col items-start gap-5"
                   : `${
-                      postId === 3
+                      pos === 3
                         ? "flex flex-[50%] flex-col items-start gap-5"
                         : "flex flex-[55%] flex-col items-start gap-5"
                     }`
@@ -61,19 +76,35 @@ export const PostCard = ({
       >
         <div className="flex flex-col gap-2">
           <h3 className="text-[14px] text-[var(--date-foreground)] font-semibold">
-            Sunday, 1 Jan 2023
+            {post.createdAt?.toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
           </h3>
-          <h1 className="text-[23px] font-semibold">UX review presentations</h1>
-          <p className="text-[15px] text-[var(--muted-foreground)] line-clamp-3">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          <h1 className="text-[23px] font-semibold">{post.title}</h1>
+          <p
+            className={`${
+              pos === 1 || pos === 2
+                ? "text-[15px] text-[var(--muted-foreground)] line-clamp-3 laptop:line-clamp-2"
+                : "text-[15px] text-[var(--muted-foreground)] line-clamp-3"
+            }`}
+          >
+            {post.content
+              .replace(/<[^>]+>/g, "")
+              .replace(/\n/g, " ")
+              .trim()
+              .substring(0, 150) + "..."}
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <PostTag label="UX" />
-          <PostTag label="Design" />
-          <PostTag label="Presentations" />
+          {postTags.map((tag) => (
+            <PostTag
+              key={tag.tag.id}
+              label={tag.tag.name}
+            />
+          ))}
         </div>
       </div>
     </div>
