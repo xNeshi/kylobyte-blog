@@ -6,9 +6,6 @@ export default async function Home() {
   const recentPosts = await fetchRecentPosts();
   const featuredPosts = await fetchFeaturedPosts();
 
-  console.log("Featured Posts:", featuredPosts);
-  console.log("Recent Posts:", recentPosts);
-
   return (
     <>
       <HeaderTitle />
