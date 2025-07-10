@@ -1,6 +1,7 @@
 import { SelectPost } from "@/db/schema";
 import { fetchTagsByPostId } from "@/lib/actions/tag";
 import Image from "next/image";
+import Link from "next/link";
 import PostTag from "./PostTag";
 
 type PostCardProps = {
@@ -19,7 +20,8 @@ export const PostCard = async ({
   const postTags = await fetchTagsByPostId(post.id);
 
   return (
-    <div
+    <Link
+      href={`/blogs/${post.slug}-${post.id.slice(0, 8)}`}
       className={`${
         recent
           ? `${
@@ -107,7 +109,7 @@ export const PostCard = async ({
           ))}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
