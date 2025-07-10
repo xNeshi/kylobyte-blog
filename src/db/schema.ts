@@ -1,3 +1,4 @@
+import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import {
   pgTable,
   primaryKey,
@@ -47,3 +48,13 @@ export const postTag = pgTable(
   },
   (table) => [primaryKey({ columns: [table.postId, table.tagId] })]
 );
+
+type SelectPost = InferSelectModel<typeof posts>;
+type SelectComment = InferSelectModel<typeof comments>;
+type SelectTag = InferSelectModel<typeof tag>;
+type SelectPostTag = InferSelectModel<typeof postTag>;
+
+type InsertPost = InferInsertModel<typeof posts>;
+type InsertComment = InferInsertModel<typeof comments>;
+type InsertTag = InferInsertModel<typeof tag>;
+type InsertPostTag = InferInsertModel<typeof postTag>;
