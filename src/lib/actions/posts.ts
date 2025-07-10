@@ -1,8 +1,13 @@
 "use server";
 
-import { getAllPost, getPostById, getRecentPosts } from "../queries/post";
+import {
+  getAllPost,
+  getFeaturedPosts,
+  getPostById,
+  getRecentPosts,
+} from "../queries/posts";
 
-export async function fetchPosts() {
+export async function fetchAllPosts() {
   try {
     const res = await getAllPost();
     return res;
@@ -29,5 +34,15 @@ export async function fetchPostById(postId: string) {
   } catch (error) {
     console.error("Error fetching post by ID:", error);
     return null;
+  }
+}
+
+export async function fetchFeaturedPosts(limit: number = 3) {
+  try {
+    const res = await getFeaturedPosts(limit);
+    return res;
+  } catch (error) {
+    console.error("Error fetching featured posts:", error);
+    return [];
   }
 }
