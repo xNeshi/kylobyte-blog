@@ -15,6 +15,13 @@
       "when": 1752024295424,
       "tag": "0001_red_firedrake",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752117375688,
+      "tag": "0002_nifty_sister_grimm",
+      "breakpoints": true
     }
   ]
 }
