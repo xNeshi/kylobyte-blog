@@ -10,7 +10,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-export const posts = pgTable("blog", {
+export const posts = pgTable("posts", {
   id: uuid("id").primaryKey().defaultRandom(),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   title: text("title").notNull(),
@@ -51,12 +51,12 @@ export const postTag = pgTable(
   (table) => [primaryKey({ columns: [table.postId, table.tagId] })]
 );
 
-type SelectPost = InferSelectModel<typeof posts>;
-type SelectComment = InferSelectModel<typeof comments>;
-type SelectTag = InferSelectModel<typeof tag>;
-type SelectPostTag = InferSelectModel<typeof postTag>;
+export type SelectPost = InferSelectModel<typeof posts>;
+export type SelectComment = InferSelectModel<typeof comments>;
+export type SelectTag = InferSelectModel<typeof tag>;
+export type SelectPostTag = InferSelectModel<typeof postTag>;
 
-type InsertPost = InferInsertModel<typeof posts>;
-type InsertComment = InferInsertModel<typeof comments>;
-type InsertTag = InferInsertModel<typeof tag>;
-type InsertPostTag = InferInsertModel<typeof postTag>;
+export type InsertPost = InferInsertModel<typeof posts>;
+export type InsertComment = InferInsertModel<typeof comments>;
+export type InsertTag = InferInsertModel<typeof tag>;
+export type InsertPostTag = InferInsertModel<typeof postTag>;
