@@ -1,5 +1,6 @@
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import {
+  boolean,
   pgTable,
   primaryKey,
   serial,
@@ -15,6 +16,7 @@ export const posts = pgTable("blog", {
   title: text("title").notNull(),
   imageUrl: text("image_url").notNull(),
   content: text("content").notNull(),
+  isFeatured: boolean("is_featured").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
