@@ -24,6 +24,7 @@
 
     --hover-bg: #e0e7ff;
     --active-bg: #c7d2fe;
+    --accent-background: #f4f4f5;
   }
 
   .dark {
@@ -34,6 +35,7 @@
 
     --hover-bg: #312e81;
     --active-bg: #3730a3;
+    --accent-background: #1f2937;
   }
 
   body {
