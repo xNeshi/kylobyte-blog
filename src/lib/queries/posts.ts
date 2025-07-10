@@ -23,3 +23,12 @@ export async function getRecentPosts(limit: number = 4) {
     .orderBy(desc(posts.createdAt))
     .limit(limit);
 }
+
+export async function getFeaturedPosts(limit: number = 3) {
+  return await db
+    .select()
+    .from(posts)
+    .where(eq(posts.isFeatured, true))
+    .orderBy(desc(posts.createdAt))
+    .limit(limit);
+}
