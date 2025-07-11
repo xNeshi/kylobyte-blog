@@ -1,9 +1,7 @@
+import BlogContents from "@/components/BlogContents";
+import CommentSection from "@/components/CommentSection";
 import PostCard from "@/components/PostCard";
-import PostTag from "@/components/PostTag";
 import { fetchPostsBySlugWithId, fetchRecentPosts } from "@/lib/actions/posts";
-import { fetchTagsByPostId } from "@/lib/actions/tag";
-import Image from "next/image";
-import { inter } from "../../../../public/font";
 
 type BlogPostPageProps = {
   params: Promise<{
@@ -18,8 +16,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   if (!post)
     return <p className="text-gray-500 text-[30px] mt-20">Post not found.</p>;
-
-  const postTags = await fetchTagsByPostId(post.id);
 
   return (
     <div className="flex items-start  p-6 min-[1280px]:px-0 gap-10">
@@ -40,41 +36,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           No recent posts available.
         </p>
       )}
-      <article className="flex-[75%] flex flex-col justify-center gap-3 tablet:gap-2">
-        <h3 className="text-[14px] text-[var(--date-foreground)] font-semibold">
-          {post?.createdAt?.toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })}
-          ,{" "}
-          {post?.createdAt?.toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </h3>
-        <h1 className={`${inter.className} text-[23px] font-bold`}>
-          {post?.title}
-        </h1>
-        <div className="flex items-center gap-2 mb-3">
-          {postTags.map((tag) => (
-            <PostTag
-              key={tag.tag.id}
-              label={tag.tag.name}
-            />
-          ))}
-        </div>
-        <div className="relative w-full aspect-[9/5] mb-3">
-          <Image
-            src={post.imageUrl}
-            alt={post.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        </div>
-        <p>{post?.content}</p>
-      </article>
+      <div className="flex flex-col gap-6 flex-[75%]">
+        <BlogContents post={post} />
+        <hr className="my-2 opacity-20" />
+        <CommentSection post={post} />
+      </div>
     </div>
   );
 }

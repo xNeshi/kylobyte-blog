@@ -52,3 +52,9 @@
     @apply flex flex-col justify-center gap-5 hover:scale-[0.98] transition-transform duration-200 ease-in-out;
   }
 }
+
+.ProseMirror:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
