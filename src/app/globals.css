@@ -18,24 +18,24 @@
 @layer base {
   :root {
     --background: #ffffff;
+    --reverse-background: #090d1f;
     --foreground: #1a1a1a;
     --muted-foreground: #667085;
     --date-foreground: #6941c6;
 
     --hover-bg: #e0e7ff;
     --active-bg: #c7d2fe;
-    --accent-background: #f4f4f5;
   }
 
   .dark {
     --background: #090d1f;
+    --reverse-background: #ffffff;
     --foreground: #ffffff;
     --muted-foreground: #c0c5d0;
     --date-foreground: #7152ba;
 
     --hover-bg: #312e81;
     --active-bg: #3730a3;
-    --accent-background: #1f2937;
   }
 
   body {
