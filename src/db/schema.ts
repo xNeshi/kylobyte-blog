@@ -1,6 +1,7 @@
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import {
   boolean,
+  json,
   pgTable,
   primaryKey,
   serial,
@@ -29,7 +30,7 @@ export const comments = pgTable("comments", {
     .notNull()
     .references(() => posts.id, { onDelete: "cascade" }),
   author: varchar("author", { length: 100 }).notNull().default("Anonymous"),
-  content: text("content").notNull(),
+  content: json("content").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
