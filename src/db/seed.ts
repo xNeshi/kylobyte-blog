@@ -386,67 +386,6 @@ I'll share lessons from working with accessibility experts and real users with d
     { postId: insertedPosts[11].id, tagId: insertedTags[8].id }, // Performance
   ]);
 
-  await db.insert(comments).values([
-    {
-      postId: insertedPosts[0].id,
-      author: "Alice",
-      content: "Really helpful article, thank you!",
-    },
-    {
-      postId: insertedPosts[0].id,
-      content: "Great intro post!",
-    },
-    {
-      postId: insertedPosts[1].id,
-      author: "Bob",
-      content: "Love the way you explained things.",
-    },
-    {
-      postId: insertedPosts[2].id,
-      author: "Charlie",
-      content: "Design really is everything.",
-    },
-    {
-      postId: insertedPosts[3].id,
-      content: "Finally someone who made TypeScript easy to understand.",
-    },
-    {
-      postId: insertedPosts[4].id,
-      author: "Dana",
-      content: "PostgreSQL scared me before, this helped a lot.",
-    },
-    {
-      postId: insertedPosts[5].id,
-      content: "Next.js App Router is 🔥",
-    },
-    {
-      postId: insertedPosts[6].id,
-      author: "Eve",
-      content: "These performance tips are gold!",
-    },
-    {
-      postId: insertedPosts[7].id,
-      content: "CSS has come so far, great roundup.",
-    },
-    {
-      postId: insertedPosts[8].id,
-      author: "Frank",
-      content: "Security is so important, thanks for this.",
-    },
-    {
-      postId: insertedPosts[9].id,
-      content: "AI is changing everything, great practical examples.",
-    },
-    {
-      postId: insertedPosts[10].id,
-      author: "Grace",
-      content: "Our test suite needs this overhaul!",
-    },
-    {
-      postId: insertedPosts[11].id,
-      content: "Accessibility is often overlooked, great guide.",
-    },
-  ]);
   console.log("✅ Seed complete.");
 }
 
