@@ -29,6 +29,13 @@
       "when": 1752128139903,
       "tag": "0003_slippery_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1752215641448,
+      "tag": "0004_outgoing_tarantula",
+      "breakpoints": true
     }
   ]
 }

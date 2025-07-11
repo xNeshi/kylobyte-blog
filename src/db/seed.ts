@@ -386,6 +386,106 @@ I'll share lessons from working with accessibility experts and real users with d
     { postId: insertedPosts[11].id, tagId: insertedTags[8].id }, // Performance
   ]);
 
+  // Add this to your existing seed script, just before the console.log("✅ Seed complete.")
+
+  const sampleComments = [
+    // Plain text comment
+    {
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [{ type: "text", text: "Great post! Really helpful. 👍" }],
+          },
+        ],
+      },
+    },
+    // Comment with bold & italic text
+    {
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              { type: "text", text: "I " },
+              { type: "text", marks: [{ type: "bold" }], text: "love" },
+              { type: "text", text: " this! " },
+              {
+                type: "text",
+                marks: [{ type: "italic" }],
+                text: "So insightful.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    // Comment with an emoji
+    {
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [{ type: "text", text: "This solved my issue! 🎉" }],
+          },
+        ],
+      },
+    },
+    // Comment with a mention (if applicable)
+    {
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              { type: "text", text: "Hey " },
+              {
+                type: "text",
+                marks: [{ type: "mention", attrs: { id: "user123" } }],
+                text: "@admin",
+              },
+              { type: "text", text: ", can you clarify this part?" },
+            ],
+          },
+        ],
+      },
+    },
+    // Multi-paragraph comment
+    {
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [{ type: "text", text: "First paragraph..." }],
+          },
+          {
+            type: "paragraph",
+            content: [{ type: "text", text: "Second paragraph..." }],
+          },
+        ],
+      },
+    },
+  ];
+
+  // Assign comments to random posts
+  for (const post of insertedPosts) {
+    const commentCount = Math.floor(Math.random() * 4) + 2; // 2-5 comments per post
+
+    for (let i = 0; i < commentCount; i++) {
+      const randomComment =
+        sampleComments[Math.floor(Math.random() * sampleComments.length)];
+
+      await db.insert(comments).values({
+        postId: post.id,
+        content: randomComment.content, // Tiptap-compatible JSON
+      });
+    }
+  }
   console.log("✅ Seed complete.");
 }
 
