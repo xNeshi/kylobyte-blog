@@ -1,3 +1,5 @@
+"use server";
+
 import { getTagsByPostId } from "../queries/tag";
 
 export async function fetchTagsByPostId(postId: string) {
