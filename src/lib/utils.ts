@@ -58,3 +58,55 @@ export const slugify = (text: string) => {
     .replace(/--+/g, "-")
     .replace(/^-+|-+$/g, "");
 };
+
+export function isEditorContentEmpty(json: any): boolean {
+  if (!json || json.type !== "doc" || !Array.isArray(json.content)) return true;
+
+  return json.content.every((node: any) => {
+    if (node.type !== "paragraph" || !Array.isArray(node.content)) return true;
+
+    return node.content.every((child: any) => {
+      return child.type === "text" && (!child.text || child.text.trim() === "");
+    });
+  });
+}
+
+export function cleanEditorContent(doc: any): any {
+  if (!doc || doc.type !== "doc" || !Array.isArray(doc.content)) {
+    return { type: "doc", content: [] };
+  }
+
+  const isEmptyParagraph = (node: any) => {
+    if (node.type !== "paragraph" || !Array.isArray(node.content)) return true;
+
+    return node.content.every((child: any) => {
+      return child.type === "text" && (!child.text || child.text.trim() === "");
+    });
+  };
+
+  const filtered = doc.content.filter((node: any) => {
+    return node.type !== "paragraph" || !isEmptyParagraph(node);
+  });
+
+  // Trim leading/trailing empty paragraphs just in case
+  let start = 0;
+  let end = filtered.length;
+
+  while (
+    start < end &&
+    filtered[start].type === "paragraph" &&
+    isEmptyParagraph(filtered[start])
+  )
+    start++;
+  while (
+    end > start &&
+    filtered[end - 1].type === "paragraph" &&
+    isEmptyParagraph(filtered[end - 1])
+  )
+    end--;
+
+  return {
+    type: "doc",
+    content: filtered.slice(start, end),
+  };
+}

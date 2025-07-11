@@ -1,3 +1,5 @@
+"use server";
+
 import { db } from "@/db";
 import { postTag, tag } from "@/db/schema";
 import { eq } from "drizzle-orm";
