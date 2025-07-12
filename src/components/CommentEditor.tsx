@@ -13,14 +13,7 @@ import Text from "@tiptap/extension-text";
 import Underline from "@tiptap/extension-underline";
 import { EditorContent, JSONContent, useEditor } from "@tiptap/react";
 import { EmojiClickData } from "emoji-picker-react";
-import {
-  Bold,
-  ImageIcon,
-  Italic,
-  Send,
-  Smile,
-  UnderlineIcon,
-} from "lucide-react";
+import { Bold, Italic, Send, Smile, UnderlineIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
@@ -151,15 +144,6 @@ export const CommentEditor = ({ post }: CommentEditorProps) => {
           <span className={`text-[18px] opacity-20`}>|</span>
           <div className="flex items-center justify-center w-full">
             <div className="flex items-center justify-center gap-2 lphone:gap-2 relative">
-              <Button
-                className="shadow-none !p-1 lphone:!p-2"
-                onClick={() => {
-                  const url = prompt("Image URL?");
-                  if (url) editor.chain().focus().setImage({ src: url }).run();
-                }}
-              >
-                <ImageIcon className={`${ICON_SIZE.sizePhone}`} />
-              </Button>
               <button
                 ref={buttonRef}
                 type="button"
