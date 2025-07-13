@@ -68,3 +68,7 @@
 .dark .w-md-editor-toolbar {
   background-color: #090d1f !important; /* dark mode */
 }
+
+textarea::placeholder {
+  color: #9ca3af; /* Tailwind's gray-400 */
+}
