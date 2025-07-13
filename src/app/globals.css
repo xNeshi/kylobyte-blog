@@ -60,3 +60,11 @@
   box-shadow: none !important;
   border: none !important;
 }
+
+.w-md-editor-toolbar {
+  background-color: #ffffff !important; /* light mode */
+}
+
+.dark .w-md-editor-toolbar {
+  background-color: #090d1f !important; /* dark mode */
+}
