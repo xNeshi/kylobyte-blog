@@ -144,7 +144,7 @@ export const CommentEditor = ({ post }: CommentEditorProps) => {
           <span className={`text-[18px] opacity-20`}>|</span>
           <div className="flex items-center justify-center w-full">
             <div className="flex items-center justify-center gap-2 lphone:gap-2 relative">
-              <button
+              <Button
                 ref={buttonRef}
                 type="button"
                 onClick={(e) => {
@@ -152,10 +152,10 @@ export const CommentEditor = ({ post }: CommentEditorProps) => {
                   e.stopPropagation();
                   setShowPicker((p) => !p);
                 }}
-                className="p-1 rounded hover:bg-muted"
+                className="!p-1 lphone:!p-2 rounded hover:bg-muted"
               >
                 <Smile className={ICON_SIZE.sizePhone} />
-              </button>
+              </Button>
             </div>
           </div>
         </div>

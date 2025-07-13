@@ -110,3 +110,17 @@ export function cleanEditorContent(doc: any): any {
     content: filtered.slice(start, end),
   };
 }
+
+import {
+  generateReactHelpers,
+  generateUploadButton,
+  generateUploadDropzone,
+} from "@uploadthing/react";
+
+// Update the path below to the correct location of OurFileRouter
+import type { OurFileRouter } from "@/app/api/uploadthing/core";
+
+export const UploadButton = generateUploadButton<OurFileRouter>();
+export const UploadDropzone = generateUploadDropzone<OurFileRouter>();
+export const { useUploadThing, uploadFiles } =
+  generateReactHelpers<OurFileRouter>();

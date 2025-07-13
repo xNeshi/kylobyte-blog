@@ -63,3 +63,12 @@ export async function fetchPostsBySlugWithId(slugWithId: string) {
     return null;
   }
 }
+
+export async function createBlogPost(prevState: unknown, formData: FormData) {
+  try {
+    console.log("Creating blog post with formData:", formData);
+  } catch (error) {
+    console.error("Error creating blog post:", error);
+    return prevState;
+  }
+}
