@@ -1,5 +1,5 @@
 {
-  "id": "33c87040-7ba6-4571-83ce-7d8923cb7bc7",
+  "id": "2a70db5c-c48d-44ba-a77c-10c0b8ec4d21",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -30,7 +30,7 @@
         },
         "content": {
           "name": "content",
-          "type": "text",
+          "type": "json",
           "primaryKey": false,
           "notNull": true
         },
@@ -44,10 +44,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "comments_post_id_blog_id_fk": {
-          "name": "comments_post_id_blog_id_fk",
+        "comments_post_id_posts_id_fk": {
+          "name": "comments_post_id_posts_id_fk",
           "tableFrom": "comments",
-          "tableTo": "blog",
+          "tableTo": "posts",
           "columnsFrom": [
             "post_id"
           ],
@@ -83,10 +83,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "post_tag_post_id_blog_id_fk": {
-          "name": "post_tag_post_id_blog_id_fk",
+        "post_tag_post_id_posts_id_fk": {
+          "name": "post_tag_post_id_posts_id_fk",
           "tableFrom": "post_tag",
-          "tableTo": "blog",
+          "tableTo": "posts",
           "columnsFrom": [
             "post_id"
           ],
@@ -124,8 +124,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.blog": {
-      "name": "blog",
+    "public.posts": {
+      "name": "posts",
       "schema": "",
       "columns": {
         "id": {
@@ -147,14 +147,40 @@
           "primaryKey": false,
           "notNull": true
         },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "content": {
           "name": "content",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
+        "is_featured": {
+          "name": "is_featured",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
         "created_at": {
           "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
@@ -165,8 +191,8 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "blog_slug_unique": {
-          "name": "blog_slug_unique",
+        "posts_slug_unique": {
+          "name": "posts_slug_unique",
           "nullsNotDistinct": false,
           "columns": [
             "slug"

@@ -38,6 +38,8 @@ async function main() {
       {
         slug: "my-first-post",
         title: "My First Post",
+        description:
+          "Welcome to my blog where I'll share my web development journey, from beginner lessons to advanced techniques. Join me as I explore modern web technologies.",
         imageUrl: "/images/sample-1.jpg",
         content: `
 Welcome to my very first post!
@@ -51,14 +53,14 @@ In this post, I'll cover:
 - What kind of posts you can expect here
 
 This blog will be raw, honest, and full of real-world learnings. Whether it's code snippets, project breakdowns, or just lessons learned the hard way — I'll be sharing it all. Thank you for joining me at the start. Let's grow together!
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: true,
       },
       {
         slug: "second-post-about-web-dev",
         title: "Second Post About Web Dev",
+        description:
+          "Exploring the reality of web development in 2025 - JavaScript frameworks, build tools, and why fundamentals still matter most in our fast-evolving industry.",
         imageUrl: "/images/sample-2.jpg",
         content: `
 Let's talk about the reality of being a web developer in 2025.
@@ -73,14 +75,14 @@ In this post I'll share:
 - How to avoid tutorial hell
 
 There's no one-size-fits-all solution in web development. But I hope this post helps guide you toward building solid, maintainable apps with clarity and confidence.
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: false,
       },
       {
         slug: "design-matters-in-modern-web",
         title: "Design Matters in Modern Web",
+        description:
+          "Why design is more than aesthetics - it's about communication and usability. Tips for developers to improve their design skills and create better user experiences.",
         imageUrl: "/images/sample-3.jpg",
         content: `
 Design is not just about looking pretty. It's about communication, clarity, and usability.
@@ -93,14 +95,14 @@ In this post, I want to talk about:
 - Tips for devs who don't have a design background
 
 I'll also share examples of beautiful UI patterns and how to implement them using Tailwind CSS and Figma exports. Great design elevates good products into unforgettable ones — and it's worth learning.
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: true,
       },
       {
         slug: "getting-started-with-typescript",
         title: "Getting Started with TypeScript",
+        description:
+          "A beginner's guide to TypeScript - why it's worth learning, common pitfalls to avoid, and how it can improve your code quality and developer experience.",
         imageUrl: "/images/sample-4.jpg",
         content: `
 TypeScript can feel overwhelming when you first start—but trust me, it's worth the effort.
@@ -113,14 +115,14 @@ In this post, I'll walk you through:
 - My favorite utility types and patterns
 
 I'll also give real-world examples showing how TypeScript helped me catch bugs early, structure my code better, and collaborate more effectively. By the end of this, you'll wonder how you ever lived without it.
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: false,
       },
       {
         slug: "using-postgresql-without-pain",
         title: "Using PostgreSQL Without Pain",
+        description:
+          "PostgreSQL made approachable - from basic setup to performance optimization. Learn how to work with relational data effectively in your applications.",
         imageUrl: "/images/sample-5.jpg",
         content: `
 PostgreSQL is incredibly powerful, but getting started can be intimidating.
@@ -133,14 +135,14 @@ This post will focus on:
 - Avoiding performance traps
 
 I'll also go over schema design tips, query optimization, and why PostgreSQL is my go-to for nearly every backend. If SQL has ever scared you, this post will hopefully be a breath of fresh air.
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: false,
       },
       {
         slug: "nextjs-app-router-tips",
         title: "Next.js App Router Tips",
+        description:
+          "Mastering Next.js App Router - practical tips for route groups, component architecture, data fetching, and SEO strategies in the App Router era.",
         imageUrl: "/images/sample-6.jpg",
         content: `
 Next.js App Router is powerful, but it comes with new concepts and challenges.
@@ -153,14 +155,14 @@ This post will unpack:
 - SEO strategies in the App Router era
 
 I'll also compare it with the Pages Router and talk about migration strategies. If you're planning a new project or upgrading an old one, this guide will help you get the most out of Next 13+.
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: true,
       },
       {
         slug: "react-performance-optimization",
         title: "React Performance Optimization",
+        description:
+          "Proven techniques to make your React applications faster - from basic memoization to advanced profiling and bundle size reduction strategies.",
         imageUrl: "/images/sample-7.jpg",
         content: `
 Is your React app feeling sluggish? Let's fix that.
@@ -174,14 +176,14 @@ In this deep dive, we'll cover:
 - Profiling with React DevTools
 
 Performance matters more than ever in 2025, and I'll show you practical techniques to make your React apps buttery smooth. These optimizations helped reduce our bundle size by 40% and improved interaction latency by 60%.
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: true,
       },
       {
         slug: "modern-css-techniques",
         title: "Modern CSS Techniques You Should Know",
+        description:
+          "Explore cutting-edge CSS features like container queries, :has() selector, and view transitions that are changing how we style the web in 2025.",
         imageUrl: "/images/sample-8.jpg",
         content: `
 CSS has evolved dramatically in recent years. Here's what's worth learning in 2025.
@@ -196,14 +198,14 @@ Topics include:
 - Cascade layers
 
 I'll provide real examples of how these new features can simplify your stylesheets and enable effects that previously required JavaScript. CSS is more powerful than ever, and it's time to take advantage of that.
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: false,
       },
       {
         slug: "web-security-best-practices",
         title: "Web Security Best Practices in 2025",
+        description:
+          "Essential security practices every web developer should implement - from authentication patterns to CSP headers and protection against modern threats.",
         imageUrl: "/images/sample-9.jpg",
         content: `
 Security can't be an afterthought. Here's how to protect your web apps.
@@ -218,14 +220,14 @@ We'll examine:
 - The latest in CSRF protection
 
 I've compiled lessons from security audits of dozens of production apps. Follow these practices and sleep better knowing your app isn't the low-hanging fruit for attackers.
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: true,
       },
       {
         slug: "ai-for-web-developers",
         title: "AI for Web Developers: Practical Applications",
+        description:
+          "How AI tools can boost developer productivity - realistic use cases for test data generation, documentation, debugging, and when to avoid AI assistance.",
         imageUrl: "/images/sample-10.jpg",
         content: `
 AI isn't just hype—it's a powerful tool for developers. Here's how I use it daily.
@@ -240,14 +242,14 @@ In this post:
 - When NOT to use AI
 
 I'll share specific examples of how AI tools have made me 30% more productive while maintaining code quality. The key is knowing where it helps and where it hinders.
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: false,
       },
       {
         slug: "testing-strategies-that-scale",
         title: "Testing Strategies That Actually Scale",
+        description:
+          "Building maintainable test suites that support rapid development - balancing unit, integration, and visual testing while minimizing flakiness.",
         imageUrl: "/images/sample-11.jpg",
         content: `
 Tired of brittle tests that break with every change? Let's fix your test suite.
@@ -262,14 +264,14 @@ We'll explore:
 - Performance testing as part of CI
 
 After implementing these strategies, our team reduced flaky tests by 85% and cut CI time in half. Tests should enable change, not prevent it.
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: false,
       },
       {
         slug: "building-accessible-web-apps",
         title: "Building Truly Accessible Web Apps",
+        description:
+          "Practical accessibility techniques that benefit all users - semantic HTML, ARIA, keyboard navigation, and inclusive design patterns for modern web apps.",
         imageUrl: "/images/sample-12.jpg",
         content: `
 Accessibility isn't optional—it's essential. Here's how to do it right.
@@ -284,9 +286,7 @@ Key topics:
 - Accessible forms and error handling
 
 I'll share lessons from working with accessibility experts and real users with disabilities. These practices will make your apps usable by everyone while often improving the experience for all users.
-`
-          .repeat(3)
-          .trim(),
+`.trim(),
         isFeatured: true,
       },
     ])
@@ -386,8 +386,6 @@ I'll share lessons from working with accessibility experts and real users with d
     { postId: insertedPosts[11].id, tagId: insertedTags[8].id }, // Performance
   ]);
 
-  // Add this to your existing seed script, just before the console.log("✅ Seed complete.")
-
   const sampleComments = [
     // Plain text comment
     {
@@ -486,6 +484,7 @@ I'll share lessons from working with accessibility experts and real users with d
       });
     }
   }
+
   console.log("✅ Seed complete.");
 }
 
