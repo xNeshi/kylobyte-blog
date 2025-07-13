@@ -15,15 +15,17 @@ type BlogCreateFormProps = {
 };
 
 export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
+  const [state, action, isPending] = useActionState(createBlogPost, undefined);
+
   const { startUpload } = useUploadThing("imageUploader");
   const [file, setFile] = useState<File[] | null>(null);
-  const [value, setValue] = useState<string>("");
-
-  const [isFeatured, setIsFeatured] = useState(false);
-
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-  const [state, action, isPending] = useActionState(createBlogPost, undefined);
+  const [value, setValue] = useState(state?.fieldData?.content || "");
+  const [selectedTags, setSelectedTags] = useState<string[]>(
+    state?.fieldData?.tags || []
+  );
+  const [isFeatured, setIsFeatured] = useState<boolean>(
+    state?.fieldData?.featured ?? false
+  );
 
   const handleSubmit = async (formData: FormData) => {
     if (!file) return;
@@ -36,6 +38,8 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
       formData.append("imageUrl", uploadResult.ufsUrl);
       formData.append("content", value);
       formData.append("tags", JSON.stringify(selectedTags));
+      formData.append("featured", isFeatured.toString());
+
       action(formData);
       return;
     } catch (error) {
@@ -64,6 +68,7 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
             type="text"
             id="title"
             name="title"
+            defaultValue={state?.fieldData?.title || ""}
             className="w-full border-1 rounded-full p-2 px-5 text-[15px]"
             placeholder="Enter your blog title"
           />
@@ -105,6 +110,7 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
         </label>
         <textarea
           name="description"
+          defaultValue={state?.fieldData?.description || ""}
           id="description"
           placeholder="Enter a brief description of your blog"
           className="w-full border-1 rounded-3xl p-2 py-3 scroll-mr-2 px-5 text-[15px] h-[100px]"
@@ -138,7 +144,7 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
             onChange={(prev) => setValue(prev ?? "")}
             id="content"
             preview="edit"
-            height={600}
+            height={400}
             className="!bg-[var(--background)] !text-[var(--foreground)]"
             style={{
               padding: "0.5rem",
