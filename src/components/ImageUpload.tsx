@@ -33,7 +33,7 @@ export const ImageUpload = ({
   return (
     <div className="space-y-2">
       {preview ? (
-        <div className="relative w-full h-full aspect-[9/6] tablet:aspect-[9/3] shadow-lg border-0 overflow-clip flex items-center justify-center">
+        <div className="relative w-full h-full aspect-[9/6] tablet:aspect-[9/3] border-0 overflow-clip flex items-center justify-center">
           <Image
             src={preview}
             alt="Image preview"
@@ -52,7 +52,7 @@ export const ImageUpload = ({
           </Button>
         </div>
       ) : (
-        <div className="relative gap-3 flex flex-col w-full h-full shadow-lg aspect-[9/6] tablet:aspect-[9/3] border p-5 text-center items-center justify-center">
+        <div className="relative gap-3 flex flex-col w-full h-full aspect-[9/6] tablet:aspect-[9/3] border p-5 text-center items-center justify-center">
           <Download className="size-20 text-gray-400" />
           <input
             id="file-upload"

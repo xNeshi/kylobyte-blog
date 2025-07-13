@@ -1,6 +1,14 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import {
+  generateReactHelpers,
+  generateUploadButton,
+  generateUploadDropzone,
+} from "@uploadthing/react";
+
+import type { OurFileRouter } from "@/app/api/uploadthing/core";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -88,7 +96,6 @@ export function cleanEditorContent(doc: any): any {
     return node.type !== "paragraph" || !isEmptyParagraph(node);
   });
 
-  // Trim leading/trailing empty paragraphs just in case
   let start = 0;
   let end = filtered.length;
 
@@ -111,14 +118,15 @@ export function cleanEditorContent(doc: any): any {
   };
 }
 
-import {
-  generateReactHelpers,
-  generateUploadButton,
-  generateUploadDropzone,
-} from "@uploadthing/react";
-
-// Update the path below to the correct location of OurFileRouter
-import type { OurFileRouter } from "@/app/api/uploadthing/core";
+export function formatErrors(errors: any) {
+  const formattedErrors: Record<string, string> = {};
+  for (const key in errors) {
+    if (errors[key]) {
+      formattedErrors[key] = errors[key]?.join(". ") || ""; // Join errors with a period and space
+    }
+  }
+  return formattedErrors;
+}
 
 export const UploadButton = generateUploadButton<OurFileRouter>();
 export const UploadDropzone = generateUploadDropzone<OurFileRouter>();
