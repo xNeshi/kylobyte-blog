@@ -1,5 +1,5 @@
 "use client";
-import { X } from "lucide-react";
+import { Download, X } from "lucide-react";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "./ui/button";
@@ -33,7 +33,7 @@ export const ImageUpload = ({
   return (
     <div className="space-y-2">
       {preview ? (
-        <div className="relative w-full h-full aspect-[9/3] shadow-2xl border-0 rounded-2xl overflow-clip flex items-center justify-center">
+        <div className="relative w-full h-full aspect-[9/6] tablet:aspect-[9/3] shadow-lg border-0 overflow-clip flex items-center justify-center">
           <Image
             src={preview}
             alt="Image preview"
@@ -42,31 +42,32 @@ export const ImageUpload = ({
           />{" "}
           <Button
             type="button"
-            onChange={(e) => {
-              e.preventDefault();
+            onClick={(e) => {
               setPreview(null);
               onFileChange(null);
             }}
-            className="z-10 absolute top-2 right-2 !p-1.5 bg-gray-400 w-full h-7 tablet:w-fit text-white rounded-full hover:bg-red-600 active:bg-red-400"
+            className="z-10 absolute top-2 right-2 !p-1.5 bg-gray-400 w-fit h-7 text-white rounded-full hover:bg-red-600 active:bg-red-400"
           >
             <X />
           </Button>
         </div>
       ) : (
-        <div className="relative flex flex-col w-full h-full aspect-[9/3] border-1 rounded-2xl p-5 text-center items-center justify-center">
+        <div className="relative gap-3 flex flex-col w-full h-full shadow-lg aspect-[9/6] tablet:aspect-[9/3] border p-5 text-center items-center justify-center">
+          <Download className="size-20 text-gray-400" />
           <input
+            id="file-upload"
             type="file"
             accept="image/*"
             onChange={handleFileChange}
-            className="text-sm text-gray-500
-        file:mr-4 file:py-1 file:px-4
-        file:rounded-full 
-        file:text-sm file:font-semibold
-        file:border-1
-        file:bg-background file:text-foreground
-        file:hover:bg-[var(--hover-bg)] file:active:bg-[var(--active-bg)]
-        file:hover:scale-95 file:transition-transform file:duration-300 file:ease-in-out"
+            className="hidden"
           />
+          <label
+            htmlFor="file-upload"
+            className="cursor-pointer bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 active:bg-blue-800 transition duration-300 ease-in-out"
+          >
+            Upload Image
+          </label>
+          <p className=" text-sm text-gray-400">Only images are allowed</p>
         </div>
       )}
     </div>

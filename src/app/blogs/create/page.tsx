@@ -1,4 +1,5 @@
 import BlogCreateForm from "@/components/BlogCreateForm";
+import { fetchAllTags } from "@/lib/actions/tag";
 
 type CreateBlogPageProps = {
   searchParams: Promise<{
@@ -15,11 +16,13 @@ export default async function CreateBlogPage({
     return <div>404 Unauthorized</div>;
   }
 
+  const availableTags = await fetchAllTags();
+
   return (
     <>
       <section className="flex p-6 flex-col w-full items-center justify-center">
         <h1 className="text-[22px] font-semibold mb-6">Create a blog post</h1>
-        <BlogCreateForm />
+        <BlogCreateForm tags={availableTags} />
       </section>
     </>
   );

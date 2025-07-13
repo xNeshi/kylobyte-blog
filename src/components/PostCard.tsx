@@ -93,7 +93,7 @@ export const PostCard = async ({
                 : "text-[15px] text-[var(--muted-foreground)] line-clamp-3"
             }`}
           >
-            {post.content
+            {post.description
               .replace(/<[^>]+>/g, "")
               .replace(/\n/g, " ")
               .trim()

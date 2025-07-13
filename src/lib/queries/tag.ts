@@ -11,3 +11,7 @@ export async function getTagsByPostId(postId: string) {
     .innerJoin(postTag, eq(postTag.tagId, tag.id))
     .where(eq(postTag.postId, postId));
 }
+
+export async function getAllTags() {
+  return await db.select().from(tag);
+}

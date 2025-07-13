@@ -1,6 +1,6 @@
 "use server";
 
-import { getTagsByPostId } from "../queries/tag";
+import { getAllTags, getTagsByPostId } from "../queries/tag";
 
 export async function fetchTagsByPostId(postId: string) {
   try {
@@ -8,6 +8,16 @@ export async function fetchTagsByPostId(postId: string) {
     return res;
   } catch (error) {
     console.error("Error fetching tags by post ID:", error);
+    return [];
+  }
+}
+
+export async function fetchAllTags() {
+  try {
+    const res = await getAllTags();
+    return res;
+  } catch (error) {
+    console.error("Error fetching all tags:", error);
     return [];
   }
 }

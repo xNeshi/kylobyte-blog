@@ -51,6 +51,8 @@ export const BlogContents = async ({ post }: BlogContentsProps) => {
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
+      <p>{post?.description}</p>
+      <br />
       <p>{post?.content}</p>
     </article>
   );
