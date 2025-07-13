@@ -15,6 +15,7 @@ export const posts = pgTable("posts", {
   id: uuid("id").primaryKey().defaultRandom(),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   title: text("title").notNull(),
+  description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
   content: text("content").notNull(),
   isFeatured: boolean("is_featured").notNull().default(false),
