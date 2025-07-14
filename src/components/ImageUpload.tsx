@@ -4,11 +4,15 @@ import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
+type ImageUploadProps = {
+  onFileChange: Dispatch<SetStateAction<File[] | null>>;
+  currentImage?: string;
+};
+
 export const ImageUpload = ({
   onFileChange,
-}: {
-  onFileChange: Dispatch<SetStateAction<File[] | null>>;
-}) => {
+  currentImage,
+}: ImageUploadProps) => {
   const [preview, setPreview] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,10 +36,10 @@ export const ImageUpload = ({
 
   return (
     <div className="space-y-2">
-      {preview ? (
+      {currentImage || preview ? (
         <div className="relative w-full h-full aspect-[9/6] tablet:aspect-[9/3] border-0 overflow-clip flex items-center justify-center">
           <Image
-            src={preview}
+            src={preview || currentImage!}
             alt="Image preview"
             className="object-cover"
             fill
