@@ -7,16 +7,18 @@ import {
   getAllPost,
   getAllPostByDesc,
   getFeaturedPosts,
+  getImageUrlByPostId,
   getPostById,
   getPostsByLikeId,
   getRecentPosts,
+  updatePost,
 } from "../queries/posts";
 import {
   extractIdFromSlugWithId,
   extractSlugFromSlugWithId,
   formatErrors,
 } from "../utils";
-import { blogPostSchema } from "../validations";
+import { createBlogPostSchema, updateBlogPostSchema } from "../validations";
 
 export async function fetchAllPosts() {
   try {
@@ -98,7 +100,7 @@ export async function createBlogPost(prevState: unknown, formData: FormData) {
   };
 
   try {
-    await blogPostSchema.parseAsync(formValues);
+    await createBlogPostSchema.parseAsync(formValues);
 
     let imageUrl = "";
     if (file) {
@@ -115,13 +117,77 @@ export async function createBlogPost(prevState: unknown, formData: FormData) {
       imageUrl,
     });
 
-    console.log("Post created successfully:", post);
     return {
       status: "SUCCESS",
       post,
     };
   } catch (error) {
     if (error instanceof z.ZodError) {
+      const fieldErrors = error.flatten().fieldErrors;
+      const formattedErrors = formatErrors(fieldErrors);
+      return {
+        status: "ERROR",
+        error: "Error in the fields",
+        fieldErrors: formattedErrors,
+        fieldData: formValues,
+      };
+    } else {
+      return {
+        status: "ERROR",
+        error: "An unexpected error occurred",
+        fieldErrors: {},
+        fieldData: formValues,
+      };
+    }
+  }
+}
+
+export async function updateBlogPost(prevState: unknown, formData: FormData) {
+  const postId = formData.get("postId") as string;
+  const utapi = new UTApi();
+
+  const formValues = {
+    title: formData.get("title") as string,
+    content: formData.get("content") as string,
+    description: formData.get("description") as string,
+    tags: JSON.parse(formData.get("tags") as string),
+    featured:
+      formData.get("featured") === "true" || formData.get("featured") === "on",
+  };
+
+  try {
+    await updateBlogPostSchema.omit({ file: true }).parseAsync(formValues);
+
+    const file = formData.get("file");
+    let imageUrl: string | undefined = undefined;
+    const currentPost = await getImageUrlByPostId(postId);
+
+    if (file instanceof File && file.size > 0) {
+      if (currentPost?.imageUrl) {
+        const oldImageKey = currentPost.imageUrl.split("/").pop();
+        if (oldImageKey)
+          await utapi.deleteFiles(oldImageKey).catch(console.error);
+      }
+
+      const uploadResponse = await utapi.uploadFiles(file);
+      imageUrl = uploadResponse.data?.ufsUrl;
+      if (!imageUrl) throw new Error("Image upload failed");
+    } else {
+      imageUrl = currentPost?.imageUrl;
+    }
+
+    const updatedPost = await updatePost(postId, {
+      ...formValues,
+      imageUrl,
+    });
+
+    return {
+      status: "SUCCESS",
+      post: updatedPost,
+    };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error("Validation error:", error);
       const fieldErrors = error.flatten().fieldErrors;
       const formattedErrors = formatErrors(fieldErrors);
       return {

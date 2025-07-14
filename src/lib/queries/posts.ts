@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { posts, postTag, tag } from "@/db/schema";
 import { desc, eq, sql } from "drizzle-orm";
 import { slugify } from "../utils";
-import { BlogPostFormValues } from "../validations";
+import { BlogPostFormValues, UpdateBlogPostFormValues } from "../validations";
 
 export async function getAllPost() {
   return await db.select().from(posts);
@@ -44,6 +44,13 @@ export async function getPostsByLikeId(postId: string) {
     .select()
     .from(posts)
     .where(sql`LEFT(${posts.id}::text, 8) = ${postId}`);
+}
+
+export async function getImageUrlByPostId(postId: string) {
+  return await db.query.posts.findFirst({
+    where: eq(posts.id, postId),
+    columns: { imageUrl: true },
+  });
 }
 
 export async function createPosts(
@@ -93,5 +100,64 @@ export async function createPosts(
       .onConflictDoNothing();
 
     return post;
+  });
+}
+
+export async function updatePost(
+  postId: string,
+  params: UpdateBlogPostFormValues & { imageUrl?: string }
+) {
+  console.log("Starting update for post:", postId, "with params:", params);
+
+  return await db.transaction(async (tx) => {
+    const tagResults = await Promise.all(
+      params.tags.map(async (tagName) => {
+        console.log("Processing tags...");
+
+        const [result] = await tx
+          .insert(tag)
+          .values({ name: tagName })
+          .onConflictDoUpdate({
+            target: tag.name,
+            set: { name: tagName },
+          })
+          .returning();
+        return result;
+      })
+    );
+
+    if (!tagResults.some((tag) => tag?.id)) {
+      throw new Error("At least one valid tag is required");
+    }
+
+    const [updatedPost] = await tx
+      .update(posts)
+      .set({
+        title: params.title,
+        slug: slugify(params.title),
+        content: params.content,
+        description: params.description,
+        imageUrl: params.imageUrl,
+        isFeatured: params.featured,
+      })
+      .where(eq(posts.id, postId))
+      .returning();
+    console.log("Updated post:", updatedPost);
+
+    await tx.delete(postTag).where(eq(postTag.postId, postId));
+
+    await tx
+      .insert(postTag)
+      .values(
+        tagResults
+          .filter((tag) => tag?.id)
+          .map((tag) => ({
+            postId: updatedPost.id,
+            tagId: tag.id,
+          }))
+      )
+      .onConflictDoNothing();
+
+    return updatedPost;
   });
 }

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const blogPostSchema = z.object({
+export const baseBlogPostSchema = z.object({
   title: z
     .string()
     .min(1, "Title is required")
@@ -13,16 +13,6 @@ export const blogPostSchema = z.object({
     .string()
     .min(1, "Content is required")
     .max(50000, "Content must be less than 50,000 characters"),
-  file: z.custom<File | null>().refine(
-    (file) => {
-      return (
-        file instanceof File && file.size > 0 && file.type.startsWith("image/")
-      );
-    },
-    {
-      message: "Valid image file is required",
-    }
-  ),
   tags: z
     .array(z.string())
     .min(2, "At least two tag is required")
@@ -33,4 +23,37 @@ export const blogPostSchema = z.object({
     .transform((val) => Boolean(val)),
 });
 
-export type BlogPostFormValues = z.infer<typeof blogPostSchema>;
+export const createBlogPostSchema = baseBlogPostSchema.extend({
+  file: z.custom<File | null>().refine(
+    (file) => {
+      return (
+        file instanceof File && file.size > 0 && file.type.startsWith("image/")
+      );
+    },
+    {
+      message: "Valid image file is required",
+    }
+  ),
+});
+
+export const updateBlogPostSchema = baseBlogPostSchema.extend({
+  file: z
+    .custom<File | null>()
+    .optional()
+    .refine(
+      (file) => {
+        return (
+          file === null ||
+          (file instanceof File &&
+            file.size > 0 &&
+            file.type.startsWith("image/"))
+        );
+      },
+      {
+        message: "Valid image file is required",
+      }
+    ),
+});
+
+export type BlogPostFormValues = z.infer<typeof createBlogPostSchema>;
+export type UpdateBlogPostFormValues = z.infer<typeof updateBlogPostSchema>;
