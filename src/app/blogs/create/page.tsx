@@ -1,4 +1,5 @@
 import BlogCreateForm from "@/components/BlogCreateForm";
+import NotExist from "@/components/NotExist";
 import { fetchAllTags } from "@/lib/actions/tag";
 
 type CreateBlogPageProps = {
@@ -13,7 +14,7 @@ export default async function CreateBlogPage({
   const { secretKey } = await searchParams;
 
   if (!secretKey || secretKey !== process.env.MY_SECRET_KEY) {
-    return <div>404 Unauthorized</div>;
+    return <NotExist>404 Not Authorized</NotExist>;
   }
 
   const availableTags = await fetchAllTags();
