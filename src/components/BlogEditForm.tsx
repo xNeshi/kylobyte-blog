@@ -1,7 +1,8 @@
 "use client";
 
-import { SelectTag } from "@/db/schema";
-import { createBlogPost } from "@/lib/actions/posts";
+import { SelectPost, SelectTag } from "@/db/schema";
+import { updateBlogPost } from "@/lib/actions/posts";
+import { slugify } from "@/lib/utils";
 import MDEditor from "@uiw/react-md-editor";
 import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -12,23 +13,24 @@ import ImageUpload from "./ImageUpload";
 import { TagInput } from "./TagInput";
 import { Button } from "./ui/button";
 
-type BlogCreateFormProps = {
+type BlogEditFormProps = {
   tags: SelectTag[];
+  post: SelectPost;
+  postTags: SelectTag[];
 };
 
-export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
+export const BlogEditForm = ({ tags, post, postTags }: BlogEditFormProps) => {
   const router = useRouter();
-  const [state, action, isPending] = useActionState(createBlogPost, undefined);
+  const [state, action, isPending] = useActionState(updateBlogPost, undefined);
   const [file, setFile] = useState<File[] | null>(null);
-  const [value, setValue] = useState(state?.fieldData?.content || "");
+  const [value, setValue] = useState(post.content);
   const [selectedTags, setSelectedTags] = useState<string[]>(
-    state?.fieldData?.tags || []
+    postTags.map((tag) => tag.name)
   );
-  const [isFeatured, setIsFeatured] = useState<boolean>(
-    state?.fieldData?.featured ?? false
-  );
+  const [isFeatured, setIsFeatured] = useState<boolean>(post.isFeatured);
 
   const handleSubmit = async (formData: FormData) => {
+    formData.append("postId", post.id);
     formData.append("title", formData.get("title") as string);
     formData.append("content", value);
     formData.append("description", formData.get("description") as string);
@@ -46,11 +48,8 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
 
   useEffect(() => {
     if (state?.status === "SUCCESS") {
-      setValue("");
-      setFile(null);
-      setSelectedTags([]);
-      setIsFeatured(false);
-      router.push(`/blogs`);
+      const slug = slugify(state.post?.title!);
+      router.replace(`/blogs/${slug}-${post.id.slice(0, 8)}`);
     }
   }, [state]);
 
@@ -60,7 +59,10 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
       className="flex flex-col items-center max-w-[800px] justify-center w-full gap-5 mb-20"
     >
       <div className="flex flex-col w-full gap-2 mt-3 mb-4">
-        <ImageUpload onFileChange={setFile} />
+        <ImageUpload
+          onFileChange={setFile}
+          currentImage={post.imageUrl}
+        />
         <FormErrorMessage
           error={state?.fieldErrors}
           errorFor="file"
@@ -80,7 +82,7 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
             type="text"
             id="title"
             name="title"
-            defaultValue={state?.fieldData?.title || ""}
+            defaultValue={post.title}
             className="w-full border-1 rounded-full p-2 px-5 text-[15px]"
             placeholder="Enter your blog title"
           />
@@ -127,7 +129,7 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
         </label>
         <textarea
           name="description"
-          defaultValue={state?.fieldData?.description || ""}
+          defaultValue={post.description}
           id="description"
           placeholder="Enter a brief description of your blog"
           className="w-full border-1 rounded-3xl p-2 py-3 scroll-mr-2 px-5 text-[15px] h-[100px]"
@@ -204,4 +206,4 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
   );
 };
 
-export default BlogCreateForm;
+export default BlogEditForm;
