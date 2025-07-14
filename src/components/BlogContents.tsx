@@ -5,6 +5,7 @@ import { inter } from "../../public/font";
 import PostTag from "./PostTag";
 import PostTagList from "./PostTagList";
 const markdownit = require("markdown-it");
+const hljs = require("highlight.js");
 
 const md = markdownit();
 
@@ -18,7 +19,7 @@ export const BlogContents = async ({ post }: BlogContentsProps) => {
   const parsedContent = md.render(post.content);
 
   return (
-    <article className="flex flex-col justify-center gap-3 tablet:gap-2">
+    <article className="flex flex-col justify-center gap-3 tablet:gap-2 w-full">
       <h3 className="text-[14px] text-[var(--date-foreground)] font-semibold">
         {post?.createdAt?.toLocaleDateString("en-US", {
           month: "long",
@@ -59,7 +60,7 @@ export const BlogContents = async ({ post }: BlogContentsProps) => {
       <br />
       {parsedContent && (
         <article
-          className="prose dark:prose-invert max-w-full"
+          className="prose prose-h1:text-3xl dark:prose-invert w-full max-w-none break-words overflow-x-hidden"
           dangerouslySetInnerHTML={{ __html: parsedContent }}
         />
       )}
