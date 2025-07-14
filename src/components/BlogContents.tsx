@@ -20,21 +20,27 @@ export const BlogContents = async ({ post }: BlogContentsProps) => {
 
   return (
     <article className="flex flex-col justify-center gap-3 tablet:gap-2 w-full">
-      <h3 className="text-[14px] text-[var(--date-foreground)] font-semibold">
+      <h1 className={`${inter.className} text-[30px] font-bold`}>
+        {post?.title}
+      </h1>
+      <h3 className="text-[14px] text-[var(--date-foreground)] font-semibold -mt-2 mb-2">
         {post?.createdAt?.toLocaleDateString("en-US", {
           month: "long",
           day: "numeric",
           year: "numeric",
         })}
-        ,{" "}
-        {post?.createdAt?.toLocaleTimeString("en-US", {
+        . Last modified on{" "}
+        {post?.updatedAt?.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })}{" "}
+        at{" "}
+        {post?.updatedAt?.toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
         })}
       </h3>
-      <h1 className={`${inter.className} text-[23px] font-bold`}>
-        {post?.title}
-      </h1>
       <PostTagList
         tags={labels}
         className="laptop:hidden mb-3"
