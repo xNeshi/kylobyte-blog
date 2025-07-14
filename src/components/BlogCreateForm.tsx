@@ -172,7 +172,7 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
             id="content"
             preview="edit"
             height={400}
-            className="!bg-[var(--background)] !text-[var(--foreground)]"
+            className="!bg-background !text-foreground"
             style={{
               padding: "0.5rem",
             }}
