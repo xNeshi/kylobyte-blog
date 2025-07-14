@@ -31,7 +31,7 @@ export default function RootLayout({
         >
           <SidebarProvider>
             <NavSideBar />
-            <div className="flex flex-col w-full items-center">
+            <div className="flex flex-col w-full items-center pb-30">
               <NavBar />
               <main className="flex flex-col w-full items-center justify-center max-w-[1280px]">
                 {children}
