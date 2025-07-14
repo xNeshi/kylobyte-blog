@@ -9,6 +9,7 @@ type TagInputProps = {
   selectedTags: string[];
   setSelectedTags: (tags: string[]) => void;
 };
+
 export const TagInput = ({
   tags,
   selectedTags,
@@ -17,6 +18,7 @@ export const TagInput = ({
   const availableTags = tags.map((tag) => tag.name);
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const MAX_TAGS = 10;
 
   const filteredSuggestions = availableTags.filter(
@@ -32,11 +34,13 @@ export const TagInput = ({
     if (trimmedTag && !selectedTags.includes(trimmedTag)) {
       setSelectedTags([...selectedTags, trimmedTag]);
       setInputValue("");
+      inputRef.current?.focus();
     }
   };
 
   const removeTag = (tag: string) => {
     setSelectedTags(selectedTags.filter((t) => t !== tag));
+    inputRef.current?.focus();
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -53,23 +57,56 @@ export const TagInput = ({
     }
   };
 
+  const handleContainerClick = () => {
+    inputRef.current?.focus();
+  };
+
   return (
-    <div className="flex flex-col w-full">
-      <input
-        ref={inputRef}
-        className="w-full border-1 rounded-full p-2 px-5 text-[15px]"
-        placeholder={
-          selectedTags.length === 0 ? "Add related tags for the blog" : ""
-        }
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
+    <div className="flex flex-col w-full relative">
+      <div
+        ref={containerRef}
+        className={`flex flex-wrap items-center gap-2 w-full border-1 rounded-full p-2 px-5 min-h-[44px] ${
+          selectedTags.length > 0 ? "py-2" : ""
+        }`}
+        onClick={handleContainerClick}
+      >
+        {selectedTags.map((tag) => (
+          <span
+            key={tag}
+            className="w-fit relative group"
+          >
+            <PostTag
+              label={tag}
+              className="pr-6"
+            />
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                removeTag(tag);
+              }}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-500 hover:text-blue-700 text-sm"
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        <input
+          ref={inputRef}
+          className="flex-1 min-w-[100px] outline-none bg-transparent text-[15px]"
+          placeholder={
+            selectedTags.length === 0 ? "Add related tags for the blog" : ""
+          }
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+      </div>
 
       {inputValue &&
         filteredSuggestions.length > 0 &&
         selectedTags.length < MAX_TAGS && (
-          <ul className="border rounded bg-background shadow absolute mt-12 z-10 w-full mx-2 max-w-lg max-h-[200px] overflow-y-auto">
+          <ul className="border bg-background shadow absolute mt-13 rounded-2xl z-10 w-full mx-2 max-w-lg max-h-[200px] overflow-y-auto">
             {filteredSuggestions.map((tag) => (
               <li
                 key={tag}
@@ -81,27 +118,6 @@ export const TagInput = ({
             ))}
           </ul>
         )}
-
-      <div className="flex flex-wrap gap-2 w-full px-2">
-        {selectedTags.map((tag) => (
-          <span
-            key={tag}
-            className="w-fit mt-2 relative group"
-          >
-            <PostTag
-              label={tag}
-              className="pr-6 "
-            />
-            <button
-              type="button"
-              onClick={() => removeTag(tag)}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2  text-blue-500 hover:text-blue-700 text-sm"
-            >
-              ×
-            </button>
-          </span>
-        ))}
-      </div>
     </div>
   );
 };
