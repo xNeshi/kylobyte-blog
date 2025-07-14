@@ -11,7 +11,7 @@ export const baseBlogPostSchema = z.object({
     .max(500, "Description must be less than 500 characters"),
   content: z
     .string()
-    .min(1000, "Content must be at least 1000 characters")
+    .min(300, "Content must be at least 300 characters")
     .max(50000, "Content must be less than 50,000 characters"),
   tags: z
     .array(z.string())
