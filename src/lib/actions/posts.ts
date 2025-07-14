@@ -92,7 +92,8 @@ export async function createBlogPost(prevState: unknown, formData: FormData) {
     content: formData.get("content") as string,
     description: formData.get("description") as string,
     tags: JSON.parse(formData.get("tags") as string),
-    featured: formData.get("featured") === "true",
+    featured:
+      formData.get("featured") === "true" || formData.get("featured") === "on",
     file,
   };
 
