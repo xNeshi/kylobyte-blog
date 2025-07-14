@@ -19,6 +19,7 @@
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.7",
+    "@tailwindcss/typography": "^0.5.16",
     "@tiptap/extension-bold": "^2.25.1",
     "@tiptap/extension-emoji": "^2.25.1",
     "@tiptap/extension-hard-break": "^2.25.1",
