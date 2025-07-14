@@ -13,7 +13,7 @@ export const ImageUpload = ({
   onFileChange,
   currentImage,
 }: ImageUploadProps) => {
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(currentImage || null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -22,10 +22,13 @@ export const ImageUpload = ({
       const previewUrl = URL.createObjectURL(files[0]);
       setPreview(previewUrl);
       onFileChange(Array.from(files));
-    } else {
-      setPreview(null);
-      onFileChange(null);
     }
+  };
+
+  const handleRemoveClick = () => {
+    if (preview) URL.revokeObjectURL(preview);
+    setPreview(null);
+    onFileChange(null);
   };
 
   useEffect(() => {
@@ -36,20 +39,17 @@ export const ImageUpload = ({
 
   return (
     <div className="space-y-2">
-      {currentImage || preview ? (
+      {preview ? (
         <div className="relative w-full h-full aspect-[9/6] tablet:aspect-[9/3] border-0 overflow-clip flex items-center justify-center">
           <Image
-            src={preview || currentImage!}
+            src={preview}
             alt="Image preview"
             className="object-cover"
             fill
-          />{" "}
+          />
           <Button
             type="button"
-            onClick={(e) => {
-              setPreview(null);
-              onFileChange(null);
-            }}
+            onClick={handleRemoveClick}
             className="z-10 absolute top-2 right-2 !p-1.5 bg-gray-400 w-fit h-7 text-white rounded-full hover:bg-red-600 active:bg-red-400"
           >
             <X />
@@ -71,7 +71,7 @@ export const ImageUpload = ({
           >
             Upload Image
           </label>
-          <p className=" text-sm text-gray-400">Only images are allowed</p>
+          <p className="text-sm text-gray-400">Only images are allowed</p>
         </div>
       )}
     </div>
