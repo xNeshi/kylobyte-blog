@@ -2,12 +2,40 @@ import BlogContents from "@/components/BlogContents";
 import CommentSection from "@/components/CommentSection";
 import PostCard from "@/components/PostCard";
 import { fetchPostsBySlugWithId, fetchRecentPosts } from "@/lib/actions/posts";
+import { notFound } from "next/navigation";
 
 type BlogPostPageProps = {
   params: Promise<{
     slugWithId: string;
   }>;
 };
+
+export async function generateMetadata({ params }: BlogPostPageProps) {
+  const { slugWithId } = await params;
+  const post = await fetchPostsBySlugWithId(slugWithId);
+
+  if (!post) return notFound();
+
+  return {
+    title: post.title,
+    description: post.description,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      images: [
+        {
+          url: post.imageUrl,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: [post.imageUrl],
+    },
+  };
+}
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slugWithId } = await params;
@@ -18,7 +46,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     return <p className="text-gray-500 text-[30px] mt-20">Post not found.</p>;
 
   return (
-    <section className="flex items-start  p-6 min-[1280px]:px-0 gap-10">
+    <section className="flex items-start w-full p-6 min-[1280px]:px-0 gap-10">
       {recentPosts != null && recentPosts.length > 0 ? (
         <aside className="hidden tablet:flex flex-col flex-[25%] w-full h-full">
           <h3 className="text-[22px] mb-6 font-semibold">Recent blog posts</h3>
