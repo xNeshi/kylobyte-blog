@@ -49,74 +49,49 @@ export async function getPostsByLikeId(postId: string) {
 export async function createPosts(
   params: BlogPostFormValues & { imageUrl: string }
 ) {
-  console.log("Creating post with params:", params);
-
-  try {
-    return await db.transaction(async (tx) => {
-      try {
-        const tagResults = await Promise.all(
-          params.tags.map(async (tagName) => {
-            const [result] = await tx
-              .insert(tag)
-              .values({ name: tagName })
-              .onConflictDoUpdate({
-                target: tag.name,
-                set: { name: tagName },
-              })
-              .returning();
-            return result;
-          })
-        );
-        console.log("Tag results:", tagResults);
-
-        // Ensure at least one tag was created/found
-        if (!tagResults.some((tag) => tag?.id)) {
-          throw new Error("At least one valid tag is required");
-        }
-
-        const [post] = await tx
-          .insert(posts)
-          .values({
-            slug: slugify(params.title),
-            title: params.title,
-            content: params.content,
-            description: params.description,
-            imageUrl: params.imageUrl,
-            isFeatured: params.featured,
+  return await db.transaction(async (tx) => {
+    const tagResults = await Promise.all(
+      params.tags.map(async (tagName) => {
+        const [result] = await tx
+          .insert(tag)
+          .values({ name: tagName })
+          .onConflictDoUpdate({
+            target: tag.name,
+            set: { name: tagName },
           })
           .returning();
-        console.log("Post created:", post);
+        return result;
+      })
+    );
 
-        const updatedSlug = `${slugify(post.title)}-${String(post.id).slice(
-          0,
-          8
-        )}`;
-        await tx
-          .update(posts)
-          .set({ slug: updatedSlug })
-          .where(eq(posts.id, post.id));
+    if (!tagResults.some((tag) => tag?.id)) {
+      throw new Error("At least one valid tag is required");
+    }
 
-        await tx
-          .insert(postTag)
-          .values(
-            tagResults
-              .filter((tag) => tag?.id)
-              .map((tag) => ({
-                postId: post.id,
-                tagId: tag.id,
-              }))
-          )
-          .onConflictDoNothing();
+    const [post] = await tx
+      .insert(posts)
+      .values({
+        slug: slugify(params.title),
+        title: params.title,
+        content: params.content,
+        description: params.description,
+        imageUrl: params.imageUrl,
+        isFeatured: params.featured,
+      })
+      .returning();
 
-        console.log("Post tags associated successfully");
-        return post;
-      } catch (innerError) {
-        console.error("Transaction failed:", innerError);
-        throw innerError; // Re-throw to trigger transaction rollback
-      }
-    });
-  } catch (outerError) {
-    console.error("Create post failed:", outerError);
-    throw outerError;
-  }
+    await tx
+      .insert(postTag)
+      .values(
+        tagResults
+          .filter((tag) => tag?.id)
+          .map((tag) => ({
+            postId: post.id,
+            tagId: tag.id,
+          }))
+      )
+      .onConflictDoNothing();
+
+    return post;
+  });
 }
