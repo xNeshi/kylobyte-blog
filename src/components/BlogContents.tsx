@@ -59,7 +59,7 @@ export const BlogContents = async ({ post }: BlogContentsProps) => {
       <br />
       {parsedContent && (
         <article
-          className="prose dark:prose-invert"
+          className="prose dark:prose-invert max-w-full"
           dangerouslySetInnerHTML={{ __html: parsedContent }}
         />
       )}
