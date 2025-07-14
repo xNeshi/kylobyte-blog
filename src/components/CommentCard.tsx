@@ -32,10 +32,7 @@ export const CommentCard = ({ comment }: CommentCardProps) => {
           <h2 className="font-bold text-[15px]">{comment.author}</h2>{" "}
           <h3 className="opacity-80 text-[14px]">{timeAgo}</h3>
         </span>
-        <EditorContent
-          editor={editor}
-          className="prose dark:prose-invert"
-        />
+        <EditorContent editor={editor} />
       </div>
     </div>
   );

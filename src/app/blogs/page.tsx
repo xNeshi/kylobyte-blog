@@ -1,8 +1,8 @@
 import PostCard from "@/components/PostCard";
-import { fetchAllPosts } from "@/lib/actions/posts";
+import { fetchAllPostsByDesc } from "@/lib/actions/posts";
 
 export default async function BlogsPage() {
-  const allPosts = await fetchAllPosts();
+  const allPosts = await fetchAllPostsByDesc();
 
   return (
     <>

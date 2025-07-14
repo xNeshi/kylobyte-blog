@@ -13,7 +13,16 @@ export const blogPostSchema = z.object({
     .string()
     .min(1, "Content is required")
     .max(50000, "Content must be less than 50,000 characters"),
-  imageUrl: z.url("Image URL is required").min(1, "Image URL cannot be empty"),
+  file: z.custom<File | null>().refine(
+    (file) => {
+      return (
+        file instanceof File && file.size > 0 && file.type.startsWith("image/")
+      );
+    },
+    {
+      message: "Valid image file is required",
+    }
+  ),
   tags: z
     .array(z.string())
     .min(2, "At least two tag is required")

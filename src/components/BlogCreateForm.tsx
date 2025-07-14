@@ -2,22 +2,23 @@
 
 import { SelectTag } from "@/db/schema";
 import { createBlogPost } from "@/lib/actions/posts";
-import { useUploadThing } from "@/lib/utils";
 import MDEditor from "@uiw/react-md-editor";
 import { Star } from "lucide-react";
-import { useActionState, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useState } from "react";
 import rehypeSanitize from "rehype-sanitize";
+import FormErrorMessage from "./FormErrorMessage";
 import ImageUpload from "./ImageUpload";
 import { TagInput } from "./TagInput";
+import { Button } from "./ui/button";
 
 type BlogCreateFormProps = {
   tags: SelectTag[];
 };
 
 export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
+  const router = useRouter();
   const [state, action, isPending] = useActionState(createBlogPost, undefined);
-
-  const { startUpload } = useUploadThing("imageUploader");
   const [file, setFile] = useState<File[] | null>(null);
   const [value, setValue] = useState(state?.fieldData?.content || "");
   const [selectedTags, setSelectedTags] = useState<string[]>(
@@ -28,32 +29,43 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
   );
 
   const handleSubmit = async (formData: FormData) => {
-    if (!file) return;
+    formData.append("title", formData.get("title") as string);
+    formData.append("content", value);
+    formData.append("description", formData.get("description") as string);
+    formData.append("tags", JSON.stringify(selectedTags));
+    formData.append("featured", isFeatured.toString());
 
-    try {
-      const uploadResults = await startUpload(file);
-      const uploadResult = uploadResults && uploadResults[0];
-      if (!uploadResult?.ufsUrl) return;
-
-      formData.append("imageUrl", uploadResult.ufsUrl);
-      formData.append("content", value);
-      formData.append("tags", JSON.stringify(selectedTags));
-      formData.append("featured", isFeatured.toString());
-
-      action(formData);
-      return;
-    } catch (error) {
-      return;
+    if (file) {
+      formData.append("file", file[0]);
+    } else {
+      formData.append("file", "");
     }
+
+    action(formData);
   };
+
+  useEffect(() => {
+    if (state?.status === "SUCCESS") {
+      setValue("");
+      setFile(null);
+      setSelectedTags([]);
+      setIsFeatured(false);
+      router.push(`/blogs`);
+    }
+  }, [state]);
 
   return (
     <form
       action={handleSubmit}
-      className="flex flex-col items-center max-w-[800px] justify-center w-full gap-5"
+      className="flex flex-col items-center max-w-[800px] justify-center w-full gap-5 mb-20"
     >
       <div className="flex flex-col w-full gap-2 mt-3 mb-4">
         <ImageUpload onFileChange={setFile} />
+        <FormErrorMessage
+          error={state?.fieldErrors}
+          errorFor="imageUrl"
+          isMultiLine
+        />
       </div>
 
       <div className="flex flex-col w-full gap-3">
@@ -99,6 +111,11 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
             </label>
           </div>
         </div>
+        <FormErrorMessage
+          error={state?.fieldErrors}
+          errorFor="title"
+          isMultiLine
+        />
       </div>
 
       <div className="flex flex-col w-full gap-3">
@@ -115,6 +132,11 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
           placeholder="Enter a brief description of your blog"
           className="w-full border-1 rounded-3xl p-2 py-3 scroll-mr-2 px-5 text-[15px] h-[100px]"
         ></textarea>
+        <FormErrorMessage
+          error={state?.fieldErrors}
+          errorFor="description"
+          isMultiLine
+        />
       </div>
 
       <div className="flex flex-col w-full gap-3">
@@ -129,7 +151,13 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
         />
+        <FormErrorMessage
+          error={state?.fieldErrors}
+          errorFor="tags"
+          isMultiLine
+        />
       </div>
+
       <div className="flex flex-col w-full gap-3">
         <label
           htmlFor="content"
@@ -137,7 +165,6 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
         >
           Contents
         </label>
-
         <div className="rounded-3xl border overflow-hidden">
           <MDEditor
             value={value}
@@ -157,6 +184,21 @@ export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
             }}
           />
         </div>
+        <FormErrorMessage
+          error={state?.fieldErrors}
+          errorFor="content"
+          isMultiLine
+        />
+      </div>
+
+      <div className="flex w-full justify-end mt-3">
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="rounded-full w-full lphone:w-fit px-6 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition duration-300 ease-in-out"
+        >
+          {isPending ? "Submitting..." : "Submit Post"}
+        </Button>
       </div>
     </form>
   );
