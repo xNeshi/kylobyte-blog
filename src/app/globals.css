@@ -63,13 +63,23 @@
 }
 
 .w-md-editor-toolbar {
-  background-color: #ffffff !important; /* light mode */
+  background-color: #ffffff !important;
 }
 
 .dark .w-md-editor-toolbar {
-  background-color: #090d1f !important; /* dark mode */
+  background-color: #090d1f !important;
 }
 
 textarea::placeholder {
-  color: #9ca3af; /* Tailwind's gray-400 */
+  color: #9ca3af;
+}
+
+.wmde-markdown {
+  background-color: transparent !important;
+  color: #1a1a1a !important;
+}
+
+.dark .wmde-markdown {
+  background-color: transparent !important;
+  color: #ffffff !important;
 }

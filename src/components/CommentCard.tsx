@@ -24,7 +24,7 @@ export const CommentCard = ({ comment }: CommentCardProps) => {
 
   return (
     <div className="flex items-start gap-3">
-      <div className="flex items-center justify-center h-[50px] w-[50px] rounded-full bg-gray-200 dark:bg-gray-700">
+      <div className="flex items-center flex-shrink-0 justify-center h-[50px] w-[50px] rounded-full bg-gray-200 dark:bg-gray-700">
         A
       </div>
       <div className="flex flex-col gap-1 ">
