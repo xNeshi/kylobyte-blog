@@ -110,7 +110,7 @@ export const CommentEditor = ({ post }: CommentEditorProps) => {
     >
       <EditorContent
         editor={editor}
-        className="h-[100px] active:outline-none prose dark:prose-invert m-3 ml-4 mt-4 overflow-y-auto"
+        className="h-[100px] active:outline-none m-3 ml-4 mt-4 overflow-y-auto"
         onClick={() => editor?.commands.focus()}
       />
       <div className="flex items-center justify-between gap-4 text-sm w-full border-t-1 p-2 tablet:px-4">

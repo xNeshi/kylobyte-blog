@@ -10,6 +10,10 @@ export async function getAllPost() {
   return await db.select().from(posts);
 }
 
+export async function getAllPostByDesc() {
+  return await db.select().from(posts).orderBy(desc(posts.createdAt));
+}
+
 export async function getPostById(postId: string) {
   return await db
     .select()
@@ -42,56 +46,77 @@ export async function getPostsByLikeId(postId: string) {
     .where(sql`LEFT(${posts.id}::text, 8) = ${postId}`);
 }
 
-export async function createPosts(params: BlogPostFormValues) {
-  return await db.transaction(async (tx) => {
-    try {
-      const tagResults = await Promise.all(
-        params.tags.map(async (tagName) => {
-          return await tx
-            .insert(tag)
-            .values({ name: tagName })
-            .onConflictDoUpdate({
-              target: tag.name,
-              set: { name: tagName },
-            })
-            .returning()
-            .then((res) => res[0]);
-        })
-      );
+export async function createPosts(
+  params: BlogPostFormValues & { imageUrl: string }
+) {
+  console.log("Creating post with params:", params);
 
-      const [post] = await tx
-        .insert(posts)
-        .values({
-          slug: slugify(params.title),
-          title: params.title,
-          content: params.content,
-          description: params.description,
-          imageUrl: params.imageUrl,
-          isFeatured: params.featured,
-        })
-        .returning();
+  try {
+    return await db.transaction(async (tx) => {
+      try {
+        const tagResults = await Promise.all(
+          params.tags.map(async (tagName) => {
+            const [result] = await tx
+              .insert(tag)
+              .values({ name: tagName })
+              .onConflictDoUpdate({
+                target: tag.name,
+                set: { name: tagName },
+              })
+              .returning();
+            return result;
+          })
+        );
+        console.log("Tag results:", tagResults);
 
-      await tx
-        .update(posts)
-        .set({ slug: slugify(post.title) + `-${post.id.slice(0, 8)}` })
-        .where(eq(posts.id, post.id));
+        // Ensure at least one tag was created/found
+        if (!tagResults.some((tag) => tag?.id)) {
+          throw new Error("At least one valid tag is required");
+        }
 
-      if (tagResults.length > 0) {
+        const [post] = await tx
+          .insert(posts)
+          .values({
+            slug: slugify(params.title),
+            title: params.title,
+            content: params.content,
+            description: params.description,
+            imageUrl: params.imageUrl,
+            isFeatured: params.featured,
+          })
+          .returning();
+        console.log("Post created:", post);
+
+        const updatedSlug = `${slugify(post.title)}-${String(post.id).slice(
+          0,
+          8
+        )}`;
+        await tx
+          .update(posts)
+          .set({ slug: updatedSlug })
+          .where(eq(posts.id, post.id));
+
         await tx
           .insert(postTag)
           .values(
-            tagResults.map((tag) => ({
-              postId: post.id,
-              tagId: tag.id,
-            }))
+            tagResults
+              .filter((tag) => tag?.id)
+              .map((tag) => ({
+                postId: post.id,
+                tagId: tag.id,
+              }))
           )
           .onConflictDoNothing();
-      }
 
-      return post;
-    } catch (error) {
-      tx.rollback();
-      throw error;
-    }
-  });
+        console.log("Post tags associated successfully");
+        return post;
+      } catch (innerError) {
+        console.error("Transaction failed:", innerError);
+        throw innerError; // Re-throw to trigger transaction rollback
+      }
+    });
+  } catch (outerError) {
+    console.error("Create post failed:", outerError);
+    throw outerError;
+  }
 }

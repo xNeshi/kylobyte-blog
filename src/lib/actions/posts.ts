@@ -1,10 +1,11 @@
 "use server";
 
+import { UTApi } from "uploadthing/server";
 import z from "zod";
-
 import {
   createPosts,
   getAllPost,
+  getAllPostByDesc,
   getFeaturedPosts,
   getPostById,
   getPostsByLikeId,
@@ -23,6 +24,16 @@ export async function fetchAllPosts() {
     return res;
   } catch (error) {
     console.error("Error fetching posts:", error);
+    return [];
+  }
+}
+
+export async function fetchAllPostsByDesc() {
+  try {
+    const res = await getAllPostByDesc();
+    return res;
+  } catch (error) {
+    console.error("Error fetching posts by descending order:", error);
     return [];
   }
 }
@@ -73,26 +84,44 @@ export async function fetchPostsBySlugWithId(slugWithId: string) {
 }
 
 export async function createBlogPost(prevState: unknown, formData: FormData) {
+  const file = formData.get("file") as File | null;
+  const utapi = new UTApi();
+
   const formValues = {
     title: formData.get("title") as string,
     content: formData.get("content") as string,
     description: formData.get("description") as string,
-    imageUrl: formData.get("imageUrl") as string,
     tags: JSON.parse(formData.get("tags") as string),
     featured: formData.get("featured") === "true",
+    file,
   };
 
   try {
     await blogPostSchema.parseAsync(formValues);
-    const post = await createPosts(formValues);
 
+    let imageUrl = "";
+    if (file) {
+      const uploadResponse = await utapi.uploadFiles(file);
+
+      if (!uploadResponse.data?.ufsUrl) {
+        throw new Error("Image upload failed");
+      }
+      imageUrl = uploadResponse.data.ufsUrl;
+    }
+
+    const post = await createPosts({
+      ...formValues,
+      imageUrl,
+    });
+
+    console.log("Post created successfully:", post);
     return {
       status: "SUCCESS",
       post,
     };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const fieldErrors = z.treeifyError(error).errors;
+      const fieldErrors = error.flatten().fieldErrors;
       const formattedErrors = formatErrors(fieldErrors);
       return {
         status: "ERROR",
@@ -103,8 +132,8 @@ export async function createBlogPost(prevState: unknown, formData: FormData) {
     } else {
       return {
         status: "ERROR",
-        error: "User Doesn't Exist",
-        fieldErrors: { credentials: "Invalid Credentials. Try Again." },
+        error: "An unexpected error occurred",
+        fieldErrors: {},
         fieldData: formValues,
       };
     }

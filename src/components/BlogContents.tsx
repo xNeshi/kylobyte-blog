@@ -4,6 +4,9 @@ import Image from "next/image";
 import { inter } from "../../public/font";
 import PostTag from "./PostTag";
 import PostTagList from "./PostTagList";
+const markdownit = require("markdown-it");
+
+const md = markdownit();
 
 type BlogContentsProps = {
   post: SelectPost;
@@ -12,6 +15,7 @@ type BlogContentsProps = {
 export const BlogContents = async ({ post }: BlogContentsProps) => {
   const postTags = await fetchTagsByPostId(post.id);
   const labels = postTags.map((tag) => tag.tag.name);
+  const parsedContent = md.render(post.content);
 
   return (
     <article className="flex flex-col justify-center gap-3 tablet:gap-2">
@@ -53,7 +57,12 @@ export const BlogContents = async ({ post }: BlogContentsProps) => {
       </div>
       <p>{post?.description}</p>
       <br />
-      <p>{post?.content}</p>
+      {parsedContent && (
+        <article
+          className="prose dark:prose-invert"
+          dangerouslySetInnerHTML={{ __html: parsedContent }}
+        />
+      )}
     </article>
   );
 };
