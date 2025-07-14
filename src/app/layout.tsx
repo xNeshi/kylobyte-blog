@@ -2,6 +2,7 @@ import NavBar from "@/components/NavBar";
 import NavSideBar from "@/components/NavSideBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import "highlight.js/styles/github-dark.css";
 import type { Metadata } from "next";
 import { roboto } from "../../public/font";
 import "./globals.css";

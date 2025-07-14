@@ -1,4 +1,5 @@
 import BlogEditForm from "@/components/BlogEditForm";
+import NotExist from "@/components/NotExist";
 import { fetchPostsBySlugWithId } from "@/lib/actions/posts";
 import { fetchAllTags, fetchTagsByPostId } from "@/lib/actions/tag";
 
@@ -18,7 +19,7 @@ export default async function EditBlogPage({
   const { secretKey } = await searchParams;
 
   if (!secretKey || secretKey !== process.env.MY_SECRET_KEY) {
-    return <div>404 Unauthorized</div>;
+    return <NotExist>404 Not Authorized</NotExist>;
   }
 
   const { slugWithId } = await params;

@@ -1,5 +1,6 @@
 import BlogContents from "@/components/BlogContents";
 import CommentSection from "@/components/CommentSection";
+import NotExist from "@/components/NotExist";
 import PostCard from "@/components/PostCard";
 import { fetchPostsBySlugWithId, fetchRecentPosts } from "@/lib/actions/posts";
 import { notFound } from "next/navigation";
@@ -42,8 +43,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const post = await fetchPostsBySlugWithId(slugWithId);
   const recentPosts = await fetchRecentPosts(5);
 
-  if (!post)
-    return <p className="text-gray-500 text-[30px] mt-20">Post not found.</p>;
+  if (!post) {
+    return <NotExist>Post not found.</NotExist>;
+  }
 
   return (
     <section className="flex items-start w-full p-6 min-[1280px]:px-0 gap-10">
