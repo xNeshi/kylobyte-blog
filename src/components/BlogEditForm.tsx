@@ -193,11 +193,19 @@ export const BlogEditForm = ({ tags, post, postTags }: BlogEditFormProps) => {
         />
       </div>
 
-      <div className="flex w-full justify-end mt-3">
+      <div className="flex flex-col lphone:flex-row w-full gap-2 justify-end mt-3">
+        <Button
+          type="button"
+          onClick={() => router.back()}
+          disabled={isPending}
+          className="rounded-full w-full disabled:bg-gray-400 lphone:w-fit  pr-7 px-6 bg-red-500 hover:bg-red-700 active:bg-red-800 text-white transition duration-300 ease-in-out"
+        >
+          Cancel
+        </Button>
         <Button
           type="submit"
           disabled={isPending}
-          className="rounded-full w-full lphone:w-fit px-6 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition duration-300 ease-in-out"
+          className="rounded-full w-full disabled:bg-gray-400 lphone:w-fit px-6 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition duration-300 ease-in-out"
         >
           {isPending ? "Submitting..." : "Submit Post"}
         </Button>

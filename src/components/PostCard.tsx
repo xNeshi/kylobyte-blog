@@ -85,7 +85,9 @@ export const PostCard = async ({
               year: "numeric",
             })}
           </h3>
-          <h1 className="text-[23px] font-semibold">{post.title}</h1>
+          <h1 className="text-[23px] line-clamp-1 font-semibold">
+            {post.title}
+          </h1>
           <p
             className={`${
               pos === 1 || pos === 2

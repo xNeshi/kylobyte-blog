@@ -3,7 +3,6 @@ import CommentSection from "@/components/CommentSection";
 import NotExist from "@/components/NotExist";
 import PostCard from "@/components/PostCard";
 import { fetchPostsBySlugWithId, fetchRecentPosts } from "@/lib/actions/posts";
-import { notFound } from "next/navigation";
 
 type BlogPostPageProps = {
   params: Promise<{
@@ -15,7 +14,9 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   const { slugWithId } = await params;
   const post = await fetchPostsBySlugWithId(slugWithId);
 
-  if (!post) return notFound();
+  if (!post) {
+    return <NotExist>Post not found.</NotExist>;
+  }
 
   return {
     title: post.title,
