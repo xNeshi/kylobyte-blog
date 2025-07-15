@@ -62,15 +62,18 @@ export const deleteBlogPostSchema = z.object({
   slug: z
     .string()
     .min(1, "Slug is required")
-    .regex(/^[a-z0-9]+$/, "Invalid slug format. Try again.")
+    .regex(/^[a-z0-9-]+$/, "Invalid slug format, please try again")
     .max(100, "Slug must be less than 100 characters")
-    .refine((val) => !val.includes(" "), "Invalid slug format. Try again."),
-  secretKey: z
+    .refine(
+      (val) => !val.includes(" "),
+      "Invalid slug format, please try again"
+    ),
+  delSecretKey: z
     .string()
     .min(1, "Secret key is required")
     .max(100, "Secret key must be less than 100 characters")
     .refine(
       (val) => !val.includes(" "),
-      "Invalid secret key format. Try again."
+      "Invalid secret key format, please try again"
     ),
 });
