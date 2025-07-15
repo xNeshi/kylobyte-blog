@@ -5,7 +5,7 @@ import { createBlogPost } from "@/lib/actions/posts";
 import MDEditor from "@uiw/react-md-editor";
 import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import rehypeSanitize from "rehype-sanitize";
 import FormErrorMessage from "./FormErrorMessage";
 import ImageUpload from "./ImageUpload";
@@ -18,45 +18,40 @@ type BlogCreateFormProps = {
 
 export const BlogCreateForm = ({ tags }: BlogCreateFormProps) => {
   const router = useRouter();
-  const [state, action, isPending] = useActionState(createBlogPost, undefined);
   const [file, setFile] = useState<File[] | null>(null);
-  const [value, setValue] = useState(state?.fieldData?.content || "");
-  const [selectedTags, setSelectedTags] = useState<string[]>(
-    state?.fieldData?.tags || []
+  const [value, setValue] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [isFeatured, setIsFeatured] = useState<boolean>(false);
+
+  const [state, action, isPending] = useActionState(
+    async (prevState: unknown, formData: FormData) => {
+      formData.append("content", value);
+      formData.append("tags", JSON.stringify(selectedTags));
+      formData.append("featured", isFeatured.toString());
+
+      if (file) formData.append("file", file[0]);
+      else formData.append("file", "");
+
+      const result = await createBlogPost(prevState, formData);
+
+      if (result.status === "SUCCESS") {
+        setValue("");
+        setFile(null);
+        setSelectedTags([]);
+        setIsFeatured(false);
+        router.push(
+          `/blogs/${result.post?.slug}-${result.post?.id.slice(0, 8)}`
+        );
+      }
+
+      return result;
+    },
+    undefined
   );
-  const [isFeatured, setIsFeatured] = useState<boolean>(
-    state?.fieldData?.featured ?? false
-  );
-
-  const handleSubmit = async (formData: FormData) => {
-    formData.append("title", formData.get("title") as string);
-    formData.append("content", value);
-    formData.append("description", formData.get("description") as string);
-    formData.append("tags", JSON.stringify(selectedTags));
-    formData.append("featured", isFeatured.toString());
-
-    if (file) {
-      formData.append("file", file[0]);
-    } else {
-      formData.append("file", "");
-    }
-
-    action(formData);
-  };
-
-  useEffect(() => {
-    if (state?.status === "SUCCESS") {
-      setValue("");
-      setFile(null);
-      setSelectedTags([]);
-      setIsFeatured(false);
-      router.push(`/blogs`);
-    }
-  }, [state]);
 
   return (
     <form
-      action={handleSubmit}
+      action={action}
       className="flex flex-col items-center max-w-[800px] justify-center w-full gap-5 mb-20"
     >
       <div className="flex flex-col w-full gap-2 mt-3 mb-4">
