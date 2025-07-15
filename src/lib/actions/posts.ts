@@ -11,6 +11,7 @@ import {
   getImageUrlByPostId,
   getPostById,
   getPostsByLikeId,
+  getPostsBySearchAndPage,
   getRecentPosts,
   updatePost,
 } from "../queries/posts";
@@ -88,6 +89,16 @@ export async function fetchPostsBySlugWithId(slugWithId: string) {
   } catch (error) {
     console.error("Error fetching post by slug with ID:", error);
     return null;
+  }
+}
+
+export async function fetchPostsBySearchAndPage(search: string, page: number) {
+  try {
+    const res = await getPostsBySearchAndPage(search, page);
+    return res;
+  } catch (error) {
+    console.error("Error fetching posts by search and page:", error);
+    return { posts: [], total: 0, perPage: 0 };
   }
 }
 

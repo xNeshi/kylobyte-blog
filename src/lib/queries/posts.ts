@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { posts, postTag, tag } from "@/db/schema";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq, ilike, or, sql } from "drizzle-orm";
 import { slugify } from "../utils";
 import { BlogPostFormValues, UpdateBlogPostFormValues } from "../validations";
 
@@ -51,6 +51,30 @@ export async function getImageUrlByPostId(postId: string) {
     where: eq(posts.id, postId),
     columns: { imageUrl: true },
   });
+}
+
+export async function getPostsBySearchAndPage(search: string, page: number) {
+  const POSTS_PER_PAGE = 6;
+  const condition = search ? or(ilike(posts.title, `%${search}%`)) : undefined;
+
+  const results = await db.query.posts.findMany({
+    where: condition,
+    limit: POSTS_PER_PAGE,
+    offset: (page - 1) * POSTS_PER_PAGE,
+  });
+
+  const [pagesCount] = await db
+    .select({
+      count: sql`COUNT(*)`.mapWith(Number).as("count"),
+    })
+    .from(posts)
+    .where(condition);
+
+  return {
+    posts: results,
+    total: pagesCount,
+    perPage: POSTS_PER_PAGE,
+  };
 }
 
 export async function createPosts(
