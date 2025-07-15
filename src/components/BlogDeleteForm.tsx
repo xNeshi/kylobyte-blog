@@ -1,24 +1,25 @@
 "use client";
 
-import { SelectPost } from "@/db/schema";
-import { updateBlogPost } from "@/lib/actions/posts";
-import { slugify } from "@/lib/utils";
+import { deleteBlogPost } from "@/lib/actions/posts";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
+import FormErrorMessage from "./FormErrorMessage";
 import { Button } from "./ui/button";
 
 type BlogDeleteFormProps = {
-  post: SelectPost;
+  postTitleAndId: {
+    title: string;
+    id: string;
+  };
 };
 
-export const BlogDeleteForm = ({ post }: BlogDeleteFormProps) => {
+export const BlogDeleteForm = ({ postTitleAndId }: BlogDeleteFormProps) => {
   const router = useRouter();
-  const [state, action, isPending] = useActionState(updateBlogPost, undefined);
+  const [state, action, isPending] = useActionState(deleteBlogPost, undefined);
 
   useEffect(() => {
     if (state?.status === "SUCCESS") {
-      const slug = slugify(state.post?.title!);
-      router.replace(`/blogs/${slug}-${post.id.slice(0, 8)}`);
+      router.replace(`/blogs/`);
     }
   }, [state]);
 
@@ -30,38 +31,62 @@ export const BlogDeleteForm = ({ post }: BlogDeleteFormProps) => {
       <p className="text-gray-500 text-[16px] mb-4 text-center">
         By filling out this form, you are well aware that you are about to
         delete all necessary data relating to the blog{" "}
-        <strong>"{post.title}"</strong>. Enter your delete secret key and
-        confirm the blog slug to proceed with the deletion.
+        <strong>"{postTitleAndId.title}"</strong>. Enter your delete secret key
+        and confirm the blog slug to proceed with the deletion.
       </p>
-      <div className="flex flex-col w-full gap-3">
-        <label
-          htmlFor="del-secret-key"
-          className="text-[18px]"
-        >
-          Delete Secret Key
-        </label>
-        <input
-          type="password"
-          id="del-secret-key"
-          name="del-secret-key"
-          className="w-full border-1 rounded-full p-2 px-5 text-[15px]"
-          placeholder="Enter your delete secret key"
-        />
-      </div>
+      <input
+        type="hidden"
+        name="postId"
+        value={postTitleAndId.id}
+      />
 
       <div className="flex flex-col w-full gap-3">
         <label
           htmlFor="slug"
           className="text-[18px]"
         >
-          Blog Full Secret
+          Blog Full Slug
         </label>
         <input
           type="text"
           id="slug"
           name="slug"
+          defaultValue={state?.fieldData.slug}
           className="w-full border-1 rounded-full p-2 px-5 text-[15px]"
           placeholder="Enter the full slug of the blog post"
+        />
+        <FormErrorMessage
+          error={state?.fieldErrors}
+          errorFor="slug"
+          isMultiLine
+        />
+      </div>
+
+      <div className="flex flex-col w-full gap-3">
+        <label
+          htmlFor="delSecretKey"
+          className="text-[18px]"
+        >
+          Delete Secret Key
+        </label>
+        <input
+          type="password"
+          id="delSecretKey"
+          name="delSecretKey"
+          className="w-full border-1 rounded-full p-2 px-5 text-[15px]"
+          placeholder="Enter your delete secret key"
+        />
+        <FormErrorMessage
+          error={state?.fieldErrors}
+          errorFor="delSecretKey"
+          isMultiLine
+        />
+      </div>
+      <div className="flex flex-col w-full -mt-2">
+        <FormErrorMessage
+          error={state?.fieldErrors}
+          errorFor="invalid"
+          isMultiLine
         />
       </div>
 
@@ -79,7 +104,7 @@ export const BlogDeleteForm = ({ post }: BlogDeleteFormProps) => {
           disabled={isPending}
           className="rounded-full w-full disabled:bg-gray-400 lphone:w-fit px-6 text-white bg-red-500 hover:bg-red-700 active:bg-red-800 transition duration-300 ease-in-out"
         >
-          {isPending ? "Submitting..." : "Delete Post"}
+          {isPending ? "Deleting..." : "Delete Post"}
         </Button>
       </div>
     </form>
