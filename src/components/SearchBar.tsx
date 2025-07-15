@@ -7,32 +7,39 @@ import { Button } from "./ui/button";
 
 export const SearchBar = () => {
   const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
   const [isLaptop, setIsLaptop] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
       const isLarge = window.innerWidth >= 1024;
       setIsLaptop(isLarge);
-      setOpen(isLarge); // 👈 open only on laptop, close on mobile
+      setOpen(isLarge);
     };
 
-    handleResize(); // run on mount
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
-    <div className="flex flex-row w-full z-50 justify-end items-center laptop:w-[350px]">
+    <form
+      action={`blogs?page=1&search=${value}`}
+      className="flex flex-row w-full z-50 justify-end items-center laptop:w-[350px]"
+    >
       <AnimatePresence>
         {open && (
           <motion.input
             key="search"
+            name="search"
+            type="text"
+            placeholder="Search..."
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
             initial={{ x: 0, opacity: 0 }}
             animate={{ x: 0, width: `100%`, opacity: 1 }}
             exit={{ x: 0, width: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            type="text"
-            placeholder="Search..."
             className="w-0 p-1 px-5 border-1 rounded-full text-[15px] mr-2"
           />
         )}
@@ -40,6 +47,7 @@ export const SearchBar = () => {
 
       {!isLaptop ? (
         <Button
+          type="button"
           onClick={() => setOpen((prev) => !prev)}
           className="!p-2 !py-1.5 h-fit w-fit rounded-full"
         >
@@ -47,14 +55,14 @@ export const SearchBar = () => {
         </Button>
       ) : (
         <Button
-          type="button"
+          type="submit"
           onClick={() => setOpen(true)}
           className="!p-2 !px-3 !py-1.5 h-fit w-fit rounded-full"
         >
           <Search className="size-6" />
         </Button>
       )}
-    </div>
+    </form>
   );
 };
 
