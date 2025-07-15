@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: "vai36xa9n7.ufs.sh",
+        hostname: process.env.UPLOADTHING_DOMAIN || "",
       },
     ],
   },
