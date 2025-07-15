@@ -15,6 +15,7 @@ export const CommentCard = ({ comment }: CommentCardProps) => {
   const timeAgo = formatDistanceToNow(comment.createdAt!, { addSuffix: true });
 
   const editor = useEditor({
+    immediatelyRender: false,
     editable: false,
     extensions: [StarterKit, Underline, Image],
     content: comment.content as JSONContent,

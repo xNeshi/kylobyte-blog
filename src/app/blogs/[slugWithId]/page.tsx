@@ -1,8 +1,13 @@
 import BlogContents from "@/components/BlogContents";
+import BlogSectionRecentPosts from "@/components/BlogSectionRecentPosts";
 import CommentSection from "@/components/CommentSection";
-import NotExist from "@/components/NotExist";
-import PostCard from "@/components/PostCard";
-import { fetchPostsBySlugWithId, fetchRecentPosts } from "@/lib/actions/posts";
+import BlogContentsSkeleton from "@/components/skeletons/BlogContentsSkeleton";
+import BlogSectionRecentSkeleton from "@/components/skeletons/BlogSectionRecentSkeleton";
+import CommentSectionSkeleton from "@/components/skeletons/CommentSectionSkeleton";
+import { fetchPostsBySlugWithId } from "@/lib/actions/posts";
+import { Suspense } from "react";
+
+export const experimental_ppr = true;
 
 type BlogPostPageProps = {
   params: Promise<{
@@ -15,10 +20,11 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   const post = await fetchPostsBySlugWithId(slugWithId);
 
   if (!post) {
-    return <NotExist>Post not found.</NotExist>;
+    return null;
   }
 
   return {
+    metadataBase: new URL("https://localhost:3000"),
     title: post.title,
     description: post.description,
     openGraph: {
@@ -30,47 +36,27 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
         },
       ],
     },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.description,
-      images: [post.imageUrl],
-    },
   };
 }
 
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slugWithId } = await params;
-  const post = await fetchPostsBySlugWithId(slugWithId);
-  const recentPosts = await fetchRecentPosts(5);
-
-  if (!post) {
-    return <NotExist>Post not found.</NotExist>;
-  }
-
+export default function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <section className="flex items-start w-full p-6 min-[1280px]:px-0 gap-10">
-      {recentPosts != null && recentPosts.length > 0 ? (
-        <aside className="hidden tablet:flex flex-col flex-[25%] w-full h-full">
-          <h3 className="text-[22px] mb-6 font-semibold">Recent blog posts</h3>
-          <div className="w-full grid tablet:grid grid-cols-1 gap-y-9 gap-x-5 mb-9">
-            {recentPosts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-              />
-            ))}
-          </div>
-        </aside>
-      ) : (
-        <p className="text-gray-500 flex items-start justify-baseline">
-          No recent posts available.
-        </p>
-      )}
+      <aside className="hidden tablet:flex flex-col flex-[25%] w-full h-full">
+        <h3 className="text-[22px] mb-6 font-semibold">Recent blog posts</h3>
+        <Suspense fallback={<BlogSectionRecentSkeleton />}>
+          <BlogSectionRecentPosts />
+        </Suspense>
+      </aside>
       <div className="flex flex-col gap-6 flex-[75%]">
-        <BlogContents post={post} />
+        <Suspense fallback={<BlogContentsSkeleton />}>
+          <BlogContents params={params} />
+        </Suspense>
         <hr className="my-2 opacity-20" />
-        <CommentSection post={post} />
+        <h3 className="text-[24px] font-semibold">Leave a Comment</h3>
+        <Suspense fallback={<CommentSectionSkeleton />}>
+          <CommentSection params={params} />
+        </Suspense>
       </div>
     </section>
   );
