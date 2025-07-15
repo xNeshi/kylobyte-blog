@@ -1,6 +1,8 @@
-import PostList from "@/components/PostList";
-import PostPagination from "@/components/PostPagination";
-import { fetchPostsBySearchAndPage } from "@/lib/actions/posts";
+import PostArea from "@/components/PostArea";
+import PostAreaSkeleton from "@/components/skeletons/PostAreaSkeleton";
+import { Suspense } from "react";
+
+export const experimental_ppr = true;
 
 type BlogsPageProps = {
   searchParams: Promise<{
@@ -9,29 +11,14 @@ type BlogsPageProps = {
   }>;
 };
 
-export default async function BlogsPage({ searchParams }: BlogsPageProps) {
-  const { page = "1", search = "" } = await searchParams;
-  const {
-    posts,
-    pagesCount = 0,
-    perPage,
-  } = await fetchPostsBySearchAndPage(search, Number(page));
-
-  const currentPage = Number(page);
-
+export default function BlogsPage({ searchParams }: BlogsPageProps) {
   return (
     <>
       <section className="flex flex-col items-center justify-center p-6  min-[1280px]:px-0">
         <h3 className="text-[22px] mb-8 font-semibold ">All Blogs</h3>
-        <PostList
-          posts={posts}
-          search={search}
-        />
-        <PostPagination
-          search={search}
-          page={currentPage}
-          totalPages={Math.ceil(pagesCount / perPage)}
-        />
+        <Suspense fallback={<PostAreaSkeleton />}>
+          <PostArea searchParams={searchParams} />
+        </Suspense>
       </section>
     </>
   );

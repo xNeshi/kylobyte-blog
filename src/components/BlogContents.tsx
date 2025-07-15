@@ -1,6 +1,7 @@
-import { SelectPost } from "@/db/schema";
+import { fetchPostsBySlugWithId } from "@/lib/actions/posts";
 import { fetchTagsByPostId } from "@/lib/actions/tag";
 import { inter } from "../../public/font";
+import NotExist from "./NotExist";
 import PostImageHandler from "./PostImageHandler";
 import PostTag from "./PostTag";
 import PostTagList from "./PostTagList";
@@ -22,10 +23,19 @@ const md = markdownit({
 });
 
 type BlogContentsProps = {
-  post: SelectPost;
+  params: Promise<{
+    slugWithId: string;
+  }>;
 };
 
-export const BlogContents = async ({ post }: BlogContentsProps) => {
+export const BlogContents = async ({ params }: BlogContentsProps) => {
+  const { slugWithId } = await params;
+  const post = await fetchPostsBySlugWithId(slugWithId);
+
+  if (!post) {
+    return <NotExist>Post not found.</NotExist>;
+  }
+
   const postTags = await fetchTagsByPostId(post.id);
   const labels = postTags.map((tag) => tag.tag.name);
   const parsedContent = md.render(post.content);

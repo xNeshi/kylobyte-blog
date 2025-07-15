@@ -1,18 +1,25 @@
-import { SelectPost } from "@/db/schema";
 import { fetchCommentsByPostId } from "@/lib/actions/comments";
+import { fetchPostsBySlugWithId } from "@/lib/actions/posts";
 import { CommentCard } from "./CommentCard";
 import CommentEditor from "./CommentEditor";
 
 type CommentSectionProps = {
-  post: SelectPost;
+  params: Promise<{
+    slugWithId: string;
+  }>;
 };
 
-export const CommentSection = async ({ post }: CommentSectionProps) => {
+export const CommentSection = async ({ params }: CommentSectionProps) => {
+  const { slugWithId } = await params;
+  const post = await fetchPostsBySlugWithId(slugWithId);
+
+  if (!post) {
+    return <p className="text-gray-500">Comments not found.</p>;
+  }
   const allComments = await fetchCommentsByPostId(post.id);
 
   return (
     <section className="flex flex-col gap-4">
-      <h3 className="text-[24px] font-semibold">Leave a Comment</h3>
       <CommentEditor post={post} />
       <h3 className="text-[22px] mt-4 font-semibold">Comments:</h3>
       <div className="flex flex-col gap-8">

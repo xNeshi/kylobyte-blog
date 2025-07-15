@@ -42,7 +42,6 @@ export const CommentEditor = ({ post }: CommentEditorProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Close picker when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -83,6 +82,7 @@ export const CommentEditor = ({ post }: CommentEditorProps) => {
   };
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       Document,
       Paragraph,
