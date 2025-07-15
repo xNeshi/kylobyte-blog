@@ -122,10 +122,22 @@ export function formatErrors(errors: any) {
   const formattedErrors: Record<string, string> = {};
   for (const key in errors) {
     if (errors[key]) {
-      formattedErrors[key] = errors[key]?.join(". ") || ""; // Join errors with a period and space
+      formattedErrors[key] = errors[key]?.join(". ") || "";
     }
   }
   return formattedErrors;
+}
+
+export function isValidImageUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+    return (
+      parsedUrl.protocol === `https:` &&
+      parsedUrl.host === `${process.env.UPLOADTHING_DOMAIN}`
+    );
+  } catch {
+    return false;
+  }
 }
 
 export const UploadButton = generateUploadButton<OurFileRouter>();

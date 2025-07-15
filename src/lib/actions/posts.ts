@@ -4,6 +4,7 @@ import { UTApi } from "uploadthing/server";
 import z from "zod";
 import {
   createPosts,
+  deletePost,
   getAllPost,
   getAllPostByDesc,
   getFeaturedPosts,
@@ -17,8 +18,13 @@ import {
   extractIdFromSlugWithId,
   extractSlugFromSlugWithId,
   formatErrors,
+  isValidImageUrl,
 } from "../utils";
-import { createBlogPostSchema, updateBlogPostSchema } from "../validations";
+import {
+  createBlogPostSchema,
+  deleteBlogPostSchema,
+  updateBlogPostSchema,
+} from "../validations";
 
 export async function fetchAllPosts() {
   try {
@@ -201,6 +207,66 @@ export async function updateBlogPost(prevState: unknown, formData: FormData) {
         status: "ERROR",
         error: "An unexpected error occurred",
         fieldErrors: {},
+        fieldData: formValues,
+      };
+    }
+  }
+}
+
+export async function deleteBlogPost(prevState: unknown, formData: FormData) {
+  const postId = formData.get("postId") as string;
+  const utapi = new UTApi();
+
+  const formValues = {
+    slug: formData.get("slug") as string,
+    delSecretKey: formData.get("delSecretKey") as string,
+  };
+
+  try {
+    await deleteBlogPostSchema.parseAsync(formValues);
+
+    const post = await fetchPostById(postId);
+    if (formValues.delSecretKey !== process.env.DELETE_SECRET_KEY) {
+      throw new Error("Invalid secret key");
+    } else if (formValues.slug !== post?.slug) {
+      throw new Error("Invalid blog post slug");
+    }
+
+    const image = await getImageUrlByPostId(postId);
+    if (image && isValidImageUrl(image.imageUrl)) {
+      const imageKey = image.imageUrl.split("/").pop();
+      if (imageKey) {
+        await utapi.deleteFiles(imageKey).catch(console.error);
+      }
+    }
+
+    await deletePost(postId);
+
+    return {
+      status: "SUCCESS",
+      fieldData: {
+        slug: "",
+        secret: "",
+      },
+    };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error("Validation error:", error);
+      const fieldErrors = error.flatten().fieldErrors;
+      const formattedErrors = formatErrors(fieldErrors);
+      return {
+        status: "ERROR",
+        error: "Error in the fields",
+        fieldErrors: formattedErrors,
+        fieldData: formValues,
+      };
+    } else {
+      return {
+        status: "ERROR",
+        error: "An unexpected error occurred",
+        fieldErrors: {
+          invalid: "Invalid blog post slug or secret key, please try again.",
+        },
         fieldData: formValues,
       };
     }
