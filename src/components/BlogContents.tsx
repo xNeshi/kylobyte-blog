@@ -1,7 +1,7 @@
 import { SelectPost } from "@/db/schema";
 import { fetchTagsByPostId } from "@/lib/actions/tag";
-import Image from "next/image";
 import { inter } from "../../public/font";
+import PostImageHandler from "./PostImageHandler";
 import PostTag from "./PostTag";
 import PostTagList from "./PostTagList";
 const markdownit = require("markdown-it");
@@ -66,12 +66,9 @@ export const BlogContents = async ({ post }: BlogContentsProps) => {
         ))}
       </div>
       <div className="relative w-full aspect-[9/5] mb-3">
-        <Image
-          src={post.imageUrl}
-          alt={post.title}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        <PostImageHandler
+          imageUrl={post.imageUrl}
+          title={post.title}
         />
       </div>
       <p>{post?.description}</p>
