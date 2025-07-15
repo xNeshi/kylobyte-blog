@@ -2,7 +2,7 @@
 
 import { deleteBlogPost } from "@/lib/actions/posts";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect } from "react";
+import { useActionState } from "react";
 import FormErrorMessage from "./FormErrorMessage";
 import { Button } from "./ui/button";
 
@@ -15,13 +15,14 @@ type BlogDeleteFormProps = {
 
 export const BlogDeleteForm = ({ postTitleAndId }: BlogDeleteFormProps) => {
   const router = useRouter();
-  const [state, action, isPending] = useActionState(deleteBlogPost, undefined);
-
-  useEffect(() => {
-    if (state?.status === "SUCCESS") {
-      router.replace(`/blogs/`);
-    }
-  }, [state]);
+  const [state, action, isPending] = useActionState(
+    async (prevState: unknown, formData: FormData) => {
+      const result = await deleteBlogPost(prevState, formData);
+      if (result.status === "SUCCESS") router.push("/blogs");
+      return result;
+    },
+    undefined
+  );
 
   return (
     <form
