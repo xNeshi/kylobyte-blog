@@ -7,7 +7,7 @@ export const baseBlogPostSchema = z.object({
     .max(100, "Title must be less than 100 characters"),
   description: z
     .string()
-    .min(200, "Description must be at least 200 characters")
+    .min(150, "Description must be at least 250 characters")
     .max(500, "Description must be less than 500 characters"),
   content: z
     .string()
