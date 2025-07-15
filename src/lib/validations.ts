@@ -57,3 +57,20 @@ export const updateBlogPostSchema = baseBlogPostSchema.extend({
 
 export type BlogPostFormValues = z.infer<typeof createBlogPostSchema>;
 export type UpdateBlogPostFormValues = z.infer<typeof updateBlogPostSchema>;
+
+export const deleteBlogPostSchema = z.object({
+  slug: z
+    .string()
+    .min(1, "Slug is required")
+    .regex(/^[a-z0-9]+$/, "Invalid slug format. Try again.")
+    .max(100, "Slug must be less than 100 characters")
+    .refine((val) => !val.includes(" "), "Invalid slug format. Try again."),
+  secretKey: z
+    .string()
+    .min(1, "Secret key is required")
+    .max(100, "Secret key must be less than 100 characters")
+    .refine(
+      (val) => !val.includes(" "),
+      "Invalid secret key format. Try again."
+    ),
+});
