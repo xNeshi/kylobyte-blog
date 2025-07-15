@@ -54,6 +54,10 @@
   .post-card {
     @apply flex flex-col justify-center gap-5 hover:scale-[0.98] transition-transform duration-200 ease-in-out;
   }
+
+  .post-list {
+    @apply grid grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-3 gap-y-9 gap-x-5 mb-9;
+  }
 }
 
 .ProseMirror:focus {

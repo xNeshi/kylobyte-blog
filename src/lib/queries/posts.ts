@@ -72,7 +72,7 @@ export async function getPostsBySearchAndPage(search: string, page: number) {
 
   return {
     posts: results,
-    pagesCount: pagesCount,
+    pagesCount: pagesCount.count,
     perPage: POSTS_PER_PAGE,
   };
 }
