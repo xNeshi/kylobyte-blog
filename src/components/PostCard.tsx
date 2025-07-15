@@ -1,7 +1,7 @@
 import { SelectPost } from "@/db/schema";
 import { fetchTagsByPostId } from "@/lib/actions/tag";
-import Image from "next/image";
 import Link from "next/link";
+import PostImageHandler from "./PostImageHandler";
 import PostTagList from "./PostTagList";
 
 type PostCardProps = {
@@ -54,12 +54,9 @@ export const PostCard = async ({
             : "w-full aspect-[9/6] flex-[45%]"
         }`}
       >
-        <Image
-          src={post.imageUrl}
-          alt={post.title}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        <PostImageHandler
+          imageUrl={post.imageUrl}
+          title={post.title}
         />
       </div>
       <div
