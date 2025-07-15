@@ -107,13 +107,9 @@ export async function updatePost(
   postId: string,
   params: UpdateBlogPostFormValues & { imageUrl?: string }
 ) {
-  console.log("Starting update for post:", postId, "with params:", params);
-
   return await db.transaction(async (tx) => {
     const tagResults = await Promise.all(
       params.tags.map(async (tagName) => {
-        console.log("Processing tags...");
-
         const [result] = await tx
           .insert(tag)
           .values({ name: tagName })
@@ -142,7 +138,6 @@ export async function updatePost(
       })
       .where(eq(posts.id, postId))
       .returning();
-    console.log("Updated post:", updatedPost);
 
     await tx.delete(postTag).where(eq(postTag.postId, postId));
 
@@ -160,4 +155,8 @@ export async function updatePost(
 
     return updatedPost;
   });
+}
+
+export async function deletePost(postId: string) {
+  return await db.delete(posts).where(eq(posts.id, postId));
 }
