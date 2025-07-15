@@ -27,12 +27,17 @@ export default async function DeleteBlogPage({
   if (!post)
     return <p className="text-gray-500 text-[30px] mt-20">Post not found.</p>;
 
+  const postTitleAndId = {
+    title: post.title,
+    id: post.id,
+  };
+
   return (
     <>
       <section className="flex p-6 flex-col w-full items-center justify-center">
         <h1 className="text-[22px] font-semibold mb-6">Delete the blog post</h1>
 
-        <BlogDeleteForm post={post} />
+        <BlogDeleteForm postTitleAndId={postTitleAndId} />
       </section>
     </>
   );
