@@ -98,7 +98,7 @@ export async function fetchPostsBySearchAndPage(search: string, page: number) {
     return res;
   } catch (error) {
     console.error("Error fetching posts by search and page:", error);
-    return { posts: [], total: 0, perPage: 0 };
+    return { posts: [], pagesCount: 0, perPage: 0 };
   }
 }
 
