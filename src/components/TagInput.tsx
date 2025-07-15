@@ -1,7 +1,7 @@
 "use client";
 
 import { SelectTag } from "@/db/schema";
-import { KeyboardEvent, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import PostTag from "./PostTag";
 
 type TagInputProps = {
@@ -15,6 +15,8 @@ export const TagInput = ({
   selectedTags,
   setSelectedTags,
 }: TagInputProps) => {
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
+  const suggestionRefs = useRef<(HTMLLIElement | null)[]>([]);
   const availableTags = tags.map((tag) => tag.name);
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -44,9 +46,30 @@ export const TagInput = ({
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if ((e.key === "Enter" || e.key === ",") && inputValue.trim() !== "") {
+    if (e.key === "ArrowDown") {
       e.preventDefault();
-      addTag(inputValue);
+      setHighlightedIndex((prev) =>
+        prev < filteredSuggestions.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev > 0 ? prev - 1 : filteredSuggestions.length - 1
+      );
+    } else if (e.key === "Enter") {
+      if (
+        highlightedIndex >= 0 &&
+        highlightedIndex < filteredSuggestions.length
+      ) {
+        e.preventDefault();
+        addTag(filteredSuggestions[highlightedIndex]);
+        setHighlightedIndex(-1);
+      } else if (inputValue.trim() !== "") {
+        e.preventDefault();
+        addTag(inputValue);
+      }
+    } else if (e.key === "Escape") {
+      setHighlightedIndex(-1);
     } else if (
       e.key === "Backspace" &&
       inputValue === "" &&
@@ -60,6 +83,18 @@ export const TagInput = ({
   const handleContainerClick = () => {
     inputRef.current?.focus();
   };
+
+  useEffect(() => {
+    if (
+      highlightedIndex >= 0 &&
+      highlightedIndex < suggestionRefs.current.length
+    ) {
+      suggestionRefs.current[highlightedIndex]?.scrollIntoView({
+        block: "nearest",
+        behavior: "smooth",
+      });
+    }
+  }, [highlightedIndex]);
 
   return (
     <div className="flex flex-col w-full relative">
@@ -98,7 +133,10 @@ export const TagInput = ({
             selectedTags.length === 0 ? "Add related tags for the blog" : ""
           }
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+            setHighlightedIndex(-1);
+          }}
           onKeyDown={handleKeyDown}
         />
       </div>
@@ -107,10 +145,17 @@ export const TagInput = ({
         filteredSuggestions.length > 0 &&
         selectedTags.length < MAX_TAGS && (
           <ul className="border bg-background shadow absolute mt-13 rounded-2xl z-10 w-full mx-2 max-w-lg max-h-[200px] overflow-y-auto">
-            {filteredSuggestions.map((tag) => (
+            {filteredSuggestions.map((tag, index) => (
               <li
                 key={tag}
-                className="px-3 py-2 hover:bg-[var(--hover-bg)] cursor-pointer"
+                ref={(el) => {
+                  suggestionRefs.current[index] = el;
+                }}
+                className={`px-3 py-2 cursor-pointer ${
+                  index === highlightedIndex
+                    ? "bg-[var(--hover-bg)]"
+                    : "hover:bg-[var(--hover-bg)]"
+                }`}
                 onClick={() => addTag(tag)}
               >
                 {tag}
