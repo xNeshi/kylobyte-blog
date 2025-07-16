@@ -24,7 +24,7 @@ export const SearchBar = () => {
 
   return (
     <form
-      action={`blogs?page=1&search=${value}`}
+      action={`/blogs?page=1&search=${value}`}
       className="flex flex-row w-full z-50 justify-end items-center laptop:w-[350px]"
     >
       <AnimatePresence>
